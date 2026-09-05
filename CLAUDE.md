@@ -5,7 +5,7 @@
 
 ## Stack
 Next.js 15 (App Router) + TypeScript. Sem banco de dados: dados em `data/bank.json`.
-A entidade vive em `entities/bank/` no repo da cidade (github.com/ericmgomes/gta7-lab).
+A entidade vive em `entities/bank/` no repo da cidade (github.com/GTA7-Lab/gta7-lab).
 Na Vercel, Root Directory = `entities/bank`.
 
 ## Estrutura do JSON (`data/bank.json`)
