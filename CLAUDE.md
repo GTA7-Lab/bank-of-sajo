@@ -73,6 +73,20 @@ v1 completa e no ar: https://gta7-lab-bank-tbone3.vercel.app (projeto Vercel
 Registrada no Core sob a tag `finance`; pedido "ver o extrato de pix da cidade" percorre
 Core -> bank e volta com transacoes.
 
+## Registro no Core (sem depender do repo da cidade)
+O registro do Core diz quais tools a cidade sabe pedir. Nao temos escrita em
+`GTA7-Lab/gta7-lab-core`, entao a via e a tool `update_entity` do Core em runtime, com o
+parametro `palavra_magica` (snake_case) no **topo** da chamada — nao dentro do `patch`.
+A mudanca vale enquanto a instancia do Core durar: se ela reiniciar, o registro volta ao
+que esta no repo (4 tools) e basta refazer a chamada.
+
+Entram as 17 tools de uso publico; as 6 do catalogo (`create_product`, `update_product`,
+`delete_product`, `create_service`, `update_service`, `delete_service`) ficam de fora de
+proposito, por serem restritas pela palavra magica da entidade.
+
+Listagens precisam devolver `items`, e cada item precisa de `name` — sem isso o Core
+mostra "1 item, sem nome" mesmo recebendo os dados certos.
+
 ## Deploy
 Deploy continuo ligado: o projeto Vercel `gta7-lab-bank` (time tbone3) esta conectado a
 este repo, entao todo push no `main` publica em https://gta7-lab-bank-tbone3.vercel.app.
