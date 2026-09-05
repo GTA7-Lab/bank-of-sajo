@@ -5,8 +5,8 @@
 
 ## Stack
 Next.js 15 (App Router) + TypeScript. Sem banco de dados: dados em `data/bank.json`.
-A entidade vive em `bank/` dentro do repo da cidade (github.com/ericmgomes/gta7-lab).
-Na Vercel, Root Directory = `bank`.
+A entidade vive em `entities/bank/` no repo da cidade (github.com/ericmgomes/gta7-lab).
+Na Vercel, Root Directory = `entities/bank`.
 
 ## Estrutura do JSON (`data/bank.json`)
 - `bank` — dados institucionais (nome, moeda, agencia, tarifas).
@@ -39,12 +39,13 @@ Na Vercel, Root Directory = `bank`.
 - Sem auth, sem banco, sem Docker (limitacoes acordadas da v1).
 
 ## Status
-v1 completa: build ok, REST ok, 4 MCP tools testadas via HTTP (local).
+v1 completa: build ok, REST ok, 4 MCP tools testadas via HTTP (local). Merged no monorepo.
 Publicada na Vercel: projeto `gta7-lab-bank`, producao em
-https://gta7-lab-bank-tbone3.vercel.app — hoje protegida por Vercel Authentication (302 -> SSO).
+https://gta7-lab-bank-tbone3.vercel.app — pendencias: Vercel Authentication ainda ativa
+(302 -> SSO) e deploy continuo por Git parado na falta de Login Connection do GitHub na
+conta Vercel.
 
 ## Proxima tarefa
 1. Desativar Vercel Authentication em Settings > Deployment Protection (senao o Core nao acessa).
-2. `git push` do branch `feat/bank-entity` para https://github.com/ericmgomes/gta7-lab
-   (falta credencial do GitHub na maquina; abrir PR se nao houver permissao de escrita direta).
-3. Registrar o manifesto (`/api/manifest`) no Core Orchestrator.
+2. Registrar a entidade no Core: precisa de uma tag nova (`finance`) em
+   `core/src/lexicon.ts`, pois as tags atuais sao de passeio e nenhuma cobre banco.
