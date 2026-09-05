@@ -5,8 +5,9 @@
 
 ## Stack
 Next.js 15 (App Router) + TypeScript. Sem banco de dados: dados em `data/bank.json`.
-A entidade vive em `entities/bank/` no repo da cidade (github.com/GTA7-Lab/gta7-lab).
-Na Vercel, Root Directory = `entities/bank`.
+Repositorio proprio: github.com/GTA7-Lab/bank-of-sajo (a entidade e a raiz do repo).
+Na Vercel, Root Directory = raiz. Faz parte da cidade github.com/GTA7-Lab/gta7-lab,
+que a consome pelo endpoint MCP publicado — nao pelo codigo.
 
 ## Estrutura do JSON (`data/bank.json`)
 - `bank` — dados institucionais (nome, moeda, agencia, tarifas).
@@ -45,6 +46,6 @@ Registrada no Core sob a tag `finance`; pedido "ver o extrato de pix da cidade" 
 Core -> bank e volta com transacoes.
 
 ## Proxima tarefa
-1. Desativar Vercel Authentication em Settings > Deployment Protection (senao o Core nao acessa).
-2. Ligar o deploy continuo por Git (falta Login Connection do GitHub na conta Vercel e
-   Root Directory = `entities/bank`); hoje o deploy e manual via `vercel deploy --prod`.
+Ligar o deploy continuo do projeto Vercel `gta7-lab-bank` a este repo
+(Settings > Git > Connect, Root Directory = raiz). Hoje o deploy e manual:
+`vercel deploy --prod`. A URL publicada nao muda, entao o registro no Core continua valido.

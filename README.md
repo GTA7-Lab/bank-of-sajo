@@ -4,12 +4,16 @@ Entidade **banco** da cidade GTA7 Lab. Guarda as contas e o histórico de transa
 cidade — PIX, cartão, maquininha de comerciante, empréstimo, câmbio e ações — e expõe
 consulta de saldo, busca de transações, PIX e simulação de crédito como **MCP tools**.
 
-Pasta: `entities/bank`. Projeto Next.js independente, sem banco de dados.
+Projeto Next.js independente, sem banco de dados. Repo proprio dentro da org
+[GTA7-Lab](https://github.com/GTA7-Lab); a cidade em
+[GTA7-Lab/gta7-lab](https://github.com/GTA7-Lab/gta7-lab) consome esta entidade pelo
+endpoint MCP publicado.
 
 ## Rodar localmente
 
 ```bash
-cd entities/bank
+git clone https://github.com/GTA7-Lab/bank-of-sajo.git
+cd bank-of-sajo
 npm install
 npm run dev
 ```
@@ -77,8 +81,10 @@ aceita tanto a expressão completa quanto qualquer palavra relevante dela — é
 
 ## Deploy
 
-Projeto Next.js padrão, sem variáveis de ambiente. Na Vercel, **Root Directory =
-`entities/bank`**. O MCP fica em `https://<dominio>/api/mcp`.
+Projeto Next.js padrão, sem variáveis de ambiente. Na Vercel, o **Root Directory é a raiz
+do repo**. Em produção: https://gta7-lab-bank-tbone3.vercel.app — o MCP fica em
+[`/api/mcp`](https://gta7-lab-bank-tbone3.vercel.app/api/mcp), que é o endpoint registrado
+no Core.
 
 ## Arquivos
 
