@@ -121,9 +121,9 @@
     ]
   },
   "http": {
-    "accounts": "GET /api/accounts?account= · POST /api/accounts para abrir conta",
-    "transactions": "GET /api/transactions?account=&type=&limit=",
-    "manifest": "GET /api/manifest"
+    "mcp": "POST /api/mcp (streamable HTTP) - unica porta de acesso aos dados",
+    "manifest": "GET /api/manifest (apenas metadados da entidade)"
   },
-  "version": "0.4.0"
+  "version": "0.5.0",
+  "dataPolicy": "Contas, clientes, saldos e transacoes so sao acessiveis pelas MCP tools. Nao ha endpoint HTTP que devolva os dados do banco."
 }

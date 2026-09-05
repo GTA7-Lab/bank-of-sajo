@@ -45,10 +45,18 @@ Helper `reply(texto, dados)` no topo do route garante os dois lados.
 ## Arquivos principais
 - `lib/bank.ts` — carga do JSON, consultas, PIX e simulacao de credito.
 - `app/api/mcp/route.ts` — MCP server (mcp-handler).
-- `app/api/{accounts,transactions,manifest}/route.ts` — REST + manifesto do Core.
-- `app/page.tsx` — UI: contas com saldo e busca de transacoes.
+- `app/api/manifest/route.ts` — metadados da entidade para o Core.
+- `app/page.tsx` — pagina institucional: o que o banco faz e como conectar. Sem dados.
 - `scripts/test-mcp.mjs` — cliente de teste das tools (`npm run test:mcp`).
 - `manifest.json` — manifesto estatico da entidade para o Core (mesmo conteudo de `/api/manifest`).
+
+## Regra: dados so por MCP
+Nunca expor os dados do `data/bank.json` por acesso direto. Nada de endpoint HTTP que
+devolva conta, cliente, saldo ou transacao, e nada disso na pagina — que e institucional.
+As MCP tools sao a unica porta, porque e nelas que as regras do banco sao aplicadas.
+`/api/accounts` e `/api/transactions` existiram e foram removidos por isso; se alguem
+propuser recriar um endpoint de leitura "so para testar", a resposta e nao.
+Sobram apenas `/api/mcp` (as tools) e `/api/manifest` (metadados da entidade).
 
 ## Decisoes relevantes
 - Escritas (`send_pix`) ficam em memoria: o disco e somente leitura na Vercel. Reinicio da instancia volta ao JSON original — aceitavel na v1.

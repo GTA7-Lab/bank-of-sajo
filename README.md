@@ -20,12 +20,9 @@ npm run dev
 
 | | |
 |---|---|
-| UI | http://localhost:3000 |
-| Manifesto | `GET /api/manifest` |
-| Contas | `GET /api/accounts` · `?account=ACC-1001` (ou chave PIX) |
-| Transações | `GET /api/transactions` · `?type=pix_out&limit=5` |
-| MCP | `POST /api/mcp` (streamable HTTP) |
-| Abrir conta | `POST /api/accounts` com `{ "name": "...", "type": "corrente" }` |
+| UI | http://localhost:3000 — página institucional, sem dados |
+| MCP | `POST /api/mcp` (streamable HTTP) — única porta de acesso aos dados |
+| Manifesto | `GET /api/manifest` — só metadados da entidade |
 
 ## MCP tools
 
@@ -100,6 +97,15 @@ Conectar no Claude Code (a pasta já traz `.mcp.json` apontando para localhost):
 ```bash
 claude mcp add --transport http bank-of-sajo http://localhost:3000/api/mcp
 ```
+
+## Os dados só saem por MCP
+
+Não existe endpoint HTTP que devolva conta, cliente, saldo ou transação, e a página não
+lista nada disso — é institucional. Quem quiser os dados usa as tools, onde as regras do
+banco valem: saldo conferido antes de um PIX, cadastro que não se encerra com dinheiro em
+conta, catálogo protegido por palavra mágica.
+
+`/api/accounts` e `/api/transactions` existiram e foram removidos por essa razão.
 
 ## Dados
 
