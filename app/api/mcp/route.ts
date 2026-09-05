@@ -125,8 +125,14 @@ const handler = createMcpHandler(
             count: encontradas.length,
             currency: "BRL",
             transactions: encontradas,
-            // O Core procura os resultados em items e o rotulo em name.
-            items: encontradas.map((t) => ({ ...t, name: t.description })),
+            // O Core procura os resultados em items, mostrando name como titulo e
+            // description como subtitulo — entao o titulo leva o valor e o subtitulo o
+            // contexto, em vez de repetir a mesma frase duas vezes.
+            items: encontradas.map((t) => ({
+              ...t,
+              name: `${t.description} — ${t.direction === "credit" ? "entrada" : "saída"} de ${brl(t.amount)}`,
+              description: `${dia(t.date)} · conta ${t.accountId}${t.counterparty ? ` · ${t.counterparty}` : ""}`,
+            })),
           }
         );
       }
