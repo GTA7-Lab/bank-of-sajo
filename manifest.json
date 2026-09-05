@@ -1,0 +1,26 @@
+{
+  "id": "bank",
+  "name": "Bank of Sajo",
+  "description": "Banco da cidade GTA7 Lab: contas, saldos, transacoes (PIX, cartao, maquininha, cambio, acoes), credito e investimentos.",
+  "capabilities": [
+    "consultar_saldo",
+    "consultar_transacoes",
+    "realizar_pix",
+    "simular_credito"
+  ],
+  "mcp": {
+    "transport": "http",
+    "endpoint": "/api/mcp",
+    "tools": [
+      { "name": "get_account_balance", "description": "Saldo, titular e ultimas transacoes de uma conta (ID ou chave PIX)." },
+      { "name": "search_transactions", "description": "Busca transacoes por conta, tipo, valor, periodo ou texto." },
+      { "name": "send_pix", "description": "Executa um PIX entre contas, validando saldo." },
+      { "name": "simulate_loan", "description": "Simula credito ou financiamento e retorna parcela, total e juros." }
+    ]
+  },
+  "http": {
+    "accounts": "GET /api/accounts?account=",
+    "transactions": "GET /api/transactions?account=&type=&limit=",
+    "manifest": "GET /api/manifest"
+  }
+}
