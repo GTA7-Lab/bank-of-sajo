@@ -32,6 +32,11 @@ proposito: assim a recusa e uma frase amigavel, e nao um erro de validacao do Zo
 Nao e autenticacao — o endpoint e publico; e uma trava contra mudanca acidental.
 Parametros de cada uma no proprio `route.ts` e em `manifest.json`.
 
+**Formato para o Core:** as tools de listagem (`search_transactions`, `list_services`,
+`list_customers`, `list_products`) repetem os resultados em `items`, porque o Core so
+reconhece `items`/`results`/`data` — com a chave semantica sozinha ele exibe "1 item, sem
+nome". Cada item precisa de `name`: em transacoes ele e a `description`.
+
 **Regra de resposta:** o texto do MCP e escrito para gente — conversa, sem jargao, valores
 em R$ e datas em dd/mm/aaaa. Os dados estruturados vao em `structuredContent`, que e o que
 o Core le primeiro (`client.ts` so faz JSON.parse do texto se structuredContent faltar).

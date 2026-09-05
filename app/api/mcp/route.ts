@@ -114,13 +114,20 @@ const handler = createMcpHandler(
         if (encontradas.length === 0) {
           return reply(
             "Não encontrei nenhuma movimentação com esses critérios. Tente ampliar o período ou tirar algum filtro.",
-            { ok: true, count: 0, transactions: [] }
+            { ok: true, count: 0, transactions: [], items: [] }
           );
         }
         return reply(
           `Encontrei ${encontradas.length} ${encontradas.length === 1 ? "movimentação" : "movimentações"}:\n\n` +
             encontradas.map(linha).join("\n"),
-          { ok: true, count: encontradas.length, currency: "BRL", transactions: encontradas }
+          {
+            ok: true,
+            count: encontradas.length,
+            currency: "BRL",
+            transactions: encontradas,
+            // O Core procura os resultados em items e o rotulo em name.
+            items: encontradas.map((t) => ({ ...t, name: t.description })),
+          }
         );
       }
     );
@@ -193,7 +200,15 @@ const handler = createMcpHandler(
               )
               .join("\n") +
             `\n\nPosso simular qualquer uma dessas linhas ou aplicar um valor para você.`,
-          { ok: true, loans, investments }
+          {
+            ok: true,
+            loans,
+            investments,
+            items: [
+              ...loans.map((p) => ({ ...p, kind: "credito" })),
+              ...investments.map((p) => ({ ...p, kind: "investimento" })),
+            ],
+          }
         );
       }
     );
@@ -323,7 +338,12 @@ const handler = createMcpHandler(
       async ({ search, limit }) => {
         const clientes = listCustomers(search, limit);
         if (clientes.length === 0) {
-          return reply("Não encontrei nenhum cliente com esse critério.", { ok: true, count: 0, customers: [] });
+          return reply("Não encontrei nenhum cliente com esse critério.", {
+            ok: true,
+            count: 0,
+            customers: [],
+            items: [],
+          });
         }
         return reply(
           `${clientes.length} ${clientes.length === 1 ? "cliente" : "clientes"}:\n\n` +
@@ -334,7 +354,7 @@ const handler = createMcpHandler(
                   `${c.accounts.length} ${c.accounts.length === 1 ? "conta" : "contas"}, ${brl(c.totalBalance)}`
               )
               .join("\n"),
-          { ok: true, count: clientes.length, customers: clientes }
+          { ok: true, count: clientes.length, customers: clientes, items: clientes }
         );
       }
     );
@@ -389,7 +409,7 @@ const handler = createMcpHandler(
         if (itens.length === 0) {
           return reply(
             `Não temos serviços nessa categoria. As categorias são: contas, cartões, canais, pagamentos, crédito, investimentos, atendimento, segurança e comunidade.`,
-            { ok: true, count: 0, services: [] }
+            { ok: true, count: 0, services: [], items: [] }
           );
         }
         const porCategoria = itens.reduce<Record<string, typeof itens>>((acc, s) => {
@@ -405,7 +425,7 @@ const handler = createMcpHandler(
           .join("\n\n");
         return reply(
           `${texto}\n\nMe diga o que você precisa que eu resolvo por aqui mesmo.`,
-          { ok: true, count: itens.length, services: itens }
+          { ok: true, count: itens.length, services: itens, items: itens }
         );
       }
     );
