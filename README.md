@@ -25,17 +25,45 @@ npm run dev
 | Contas | `GET /api/accounts` · `?account=ACC-1001` (ou chave PIX) |
 | Transações | `GET /api/transactions` · `?type=pix_out&limit=5` |
 | MCP | `POST /api/mcp` (streamable HTTP) |
+| Abrir conta | `POST /api/accounts` com `{ "name": "...", "type": "corrente" }` |
 
 ## MCP tools
 
-| tool | parâmetros | retorno |
-|---|---|---|
-| `get_account_balance` | `account` — ID da conta ou chave PIX | conta, titular, saldo e as 5 últimas transações |
-| `search_transactions` | `account?`, `type?`, `direction?`, `minAmount?`, `from?`, `to?`, `search?`, `limit?` | `{count, currency, transactions[]}` |
-| `send_pix` | `from`, `to`, `amount`, `description?` | `{ok, transactionId, balanceAfter}` ou `{ok:false, error}` |
-| `simulate_loan` | `product`, `amount`, `months` | parcela, total e juros pela tabela Price |
+As respostas são escritas para gente ler — conversa, sem jargão. Os dados vão junto em
+`structuredContent`, que é o que o Core Orchestrator consome.
 
-Testar as quatro contra um servidor rodando:
+**Clientes (CRUD completo)**
+
+| tool | o que faz |
+|---|---|
+| `create_customer` | cadastra pessoa ou empresa |
+| `get_customer` | dados do cliente e as contas dele |
+| `list_customers` | lista, com filtro por nome, bairro ou perfil |
+| `update_customer` | muda nome, bairro, perfil ou gerente |
+| `delete_customer` | encerra o cadastro; recusa se houver saldo |
+
+**Contas e dinheiro**
+
+| tool | o que faz |
+|---|---|
+| `open_account` | abre conta corrente, poupança, empresarial ou de investimento |
+| `get_account_balance` | saldo, titular e últimas movimentações |
+| `search_transactions` | busca por conta, tipo, valor, período ou descrição |
+| `send_pix` | PIX entre contas, conferindo o saldo |
+| `pay_bill` | paga contas e boletos |
+| `issue_card` | emite cartão de débito ou crédito |
+
+**Produtos**
+
+| tool | o que faz |
+|---|---|
+| `list_services` | os 21 serviços do banco, por categoria |
+| `list_products` | linhas de crédito e opções de investimento |
+| `simulate_loan` | simula a parcela, sem contratar |
+| `request_loan` | contrata financiamento de imóvel, veículo, solar, pessoal ou empresarial |
+| `invest` | aplica em poupança, CDB, fundo de ações ou FIDC |
+
+Testar todas contra um servidor rodando:
 
 ```bash
 npm run test:mcp                                          # localhost:3000

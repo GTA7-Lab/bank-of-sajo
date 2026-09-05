@@ -1,26 +1,98 @@
 {
   "id": "bank",
   "name": "Bank of Sajo",
-  "description": "Banco da cidade GTA7 Lab: contas, saldos, transacoes (PIX, cartao, maquininha, cambio, acoes), credito e investimentos.",
+  "description": "Banco da cidade GTA7 Lab: abertura de contas, cadastro de clientes, saldos e transacoes (PIX, cartao, maquininha, cambio, acoes), pagamento de contas, cartoes, financiamento de imovel e veiculo, e investimentos.",
   "capabilities": [
+    "abrir_conta",
+    "cadastrar_cliente",
+    "consultar_cliente",
+    "atualizar_cliente",
+    "encerrar_cliente",
     "consultar_saldo",
     "consultar_transacoes",
     "realizar_pix",
-    "simular_credito"
+    "pagar_conta",
+    "emitir_cartao",
+    "listar_servicos",
+    "listar_produtos",
+    "simular_credito",
+    "contratar_credito",
+    "investir"
   ],
   "mcp": {
     "transport": "http",
     "endpoint": "/api/mcp",
     "tools": [
-      { "name": "get_account_balance", "description": "Saldo, titular e ultimas transacoes de uma conta (ID ou chave PIX)." },
-      { "name": "search_transactions", "description": "Busca transacoes por conta, tipo, valor, periodo ou texto." },
-      { "name": "send_pix", "description": "Executa um PIX entre contas, validando saldo." },
-      { "name": "simulate_loan", "description": "Simula credito ou financiamento e retorna parcela, total e juros." }
+      {
+        "name": "get_account_balance",
+        "description": "Mostra o saldo de uma conta, os dados do titular e as ultimas movimentacoes."
+      },
+      {
+        "name": "search_transactions",
+        "description": "Procura movimentacoes por conta, tipo, valor, periodo ou descricao."
+      },
+      {
+        "name": "open_account",
+        "description": "Abre conta corrente, poupanca, empresarial ou de investimento."
+      },
+      {
+        "name": "send_pix",
+        "description": "Envia um PIX entre contas do banco, conferindo o saldo."
+      },
+      {
+        "name": "pay_bill",
+        "description": "Paga contas e boletos debitando da conta do cliente."
+      },
+      {
+        "name": "issue_card",
+        "description": "Emite cartao de debito ou de credito para uma conta."
+      },
+      {
+        "name": "list_services",
+        "description": "Lista os servicos do banco: contas, cartoes, canais, pagamentos, credito, atendimento, seguranca e comunidade."
+      },
+      {
+        "name": "list_products",
+        "description": "Lista as linhas de credito e financiamento e as opcoes de investimento."
+      },
+      {
+        "name": "simulate_loan",
+        "description": "Simula a parcela de um credito ou financiamento, sem contratar."
+      },
+      {
+        "name": "request_loan",
+        "description": "Contrata credito ou financiamento de imovel, veiculo ou energia solar e deposita na conta."
+      },
+      {
+        "name": "invest",
+        "description": "Aplica um valor da conta em poupanca, CDB, fundo de acoes ou FIDC."
+      },
+      {
+        "name": "create_customer",
+        "description": "Cadastra um cliente novo, pessoa ou empresa."
+      },
+      {
+        "name": "get_customer",
+        "description": "Mostra os dados de um cliente e as contas dele."
+      },
+      {
+        "name": "list_customers",
+        "description": "Lista clientes, com filtro por nome, bairro ou perfil."
+      },
+      {
+        "name": "update_customer",
+        "description": "Atualiza nome, bairro, perfil ou gerente de um cliente."
+      },
+      {
+        "name": "delete_customer",
+        "description": "Encerra o cadastro de um cliente e as contas zeradas dele."
+      }
     ]
   },
   "http": {
-    "accounts": "GET /api/accounts?account=",
+    "accounts": "GET /api/accounts?account= · POST /api/accounts para abrir conta",
     "transactions": "GET /api/transactions?account=&type=&limit=",
     "manifest": "GET /api/manifest"
-  }
+  },
+  "version": "0.2.0"
 }

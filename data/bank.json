@@ -9,72 +9,655 @@
     "fees": "Conta digital sem tarifas"
   },
   "customers": [
-    { "id": "CUS-001", "name": "Ana Ribeiro", "type": "pessoa", "segment": "premium", "district": "Centro", "manager": "Marcos Lemes", "since": "2021-03-14" },
-    { "id": "CUS-002", "name": "Bruno Tavares", "type": "pessoa", "segment": "jovem", "district": "Vila Norte", "manager": "Marcos Lemes", "since": "2024-08-02" },
-    { "id": "CUS-003", "name": "Padaria Pao da Vila", "type": "empresa", "segment": "comerciante", "district": "Vila Norte", "manager": "Rita Souza", "since": "2020-01-20" },
-    { "id": "CUS-004", "name": "Cinema Lumiere GTA7", "type": "empresa", "segment": "comerciante", "district": "Centro", "manager": "Rita Souza", "since": "2022-06-11" },
-    { "id": "CUS-005", "name": "Carla Menezes", "type": "pessoa", "segment": "classico", "district": "Jardim Sul", "manager": "Marcos Lemes", "since": "2023-02-05" }
+    {
+      "id": "CUS-001",
+      "name": "Ana Ribeiro",
+      "type": "pessoa",
+      "segment": "premium",
+      "district": "Centro",
+      "manager": "Marcos Lemes",
+      "since": "2021-03-14"
+    },
+    {
+      "id": "CUS-002",
+      "name": "Bruno Tavares",
+      "type": "pessoa",
+      "segment": "jovem",
+      "district": "Vila Norte",
+      "manager": "Marcos Lemes",
+      "since": "2024-08-02"
+    },
+    {
+      "id": "CUS-003",
+      "name": "Padaria Pao da Vila",
+      "type": "empresa",
+      "segment": "comerciante",
+      "district": "Vila Norte",
+      "manager": "Rita Souza",
+      "since": "2020-01-20"
+    },
+    {
+      "id": "CUS-004",
+      "name": "Cinema Lumiere GTA7",
+      "type": "empresa",
+      "segment": "comerciante",
+      "district": "Centro",
+      "manager": "Rita Souza",
+      "since": "2022-06-11"
+    },
+    {
+      "id": "CUS-005",
+      "name": "Carla Menezes",
+      "type": "pessoa",
+      "segment": "classico",
+      "district": "Jardim Sul",
+      "manager": "Marcos Lemes",
+      "since": "2023-02-05"
+    }
   ],
   "accounts": [
-    { "id": "ACC-1001", "customerId": "CUS-001", "type": "corrente", "pixKey": "ana.ribeiro@gta7.city", "openingBalance": 12000, "status": "ativa", "openedAt": "2021-03-14" },
-    { "id": "ACC-1002", "customerId": "CUS-001", "type": "poupanca", "pixKey": "ana.poupanca@gta7.city", "openingBalance": 145000, "status": "ativa", "openedAt": "2021-04-01" },
-    { "id": "ACC-1003", "customerId": "CUS-002", "type": "corrente", "pixKey": "bruno.tavares@gta7.city", "openingBalance": 850, "status": "ativa", "openedAt": "2024-08-02" },
-    { "id": "ACC-1004", "customerId": "CUS-003", "type": "empresarial", "pixKey": "12345678000190", "openingBalance": 23400, "status": "ativa", "openedAt": "2020-01-20" },
-    { "id": "ACC-1005", "customerId": "CUS-004", "type": "empresarial", "pixKey": "98765432000155", "openingBalance": 88000, "status": "ativa", "openedAt": "2022-06-11" },
-    { "id": "ACC-1006", "customerId": "CUS-005", "type": "corrente", "pixKey": "+5511999990005", "openingBalance": 4300, "status": "ativa", "openedAt": "2023-02-05" }
+    {
+      "id": "ACC-1001",
+      "customerId": "CUS-001",
+      "type": "corrente",
+      "pixKey": "ana.ribeiro@gta7.city",
+      "openingBalance": 12000,
+      "status": "ativa",
+      "openedAt": "2021-03-14"
+    },
+    {
+      "id": "ACC-1002",
+      "customerId": "CUS-001",
+      "type": "poupanca",
+      "pixKey": "ana.poupanca@gta7.city",
+      "openingBalance": 145000,
+      "status": "ativa",
+      "openedAt": "2021-04-01"
+    },
+    {
+      "id": "ACC-1003",
+      "customerId": "CUS-002",
+      "type": "corrente",
+      "pixKey": "bruno.tavares@gta7.city",
+      "openingBalance": 850,
+      "status": "ativa",
+      "openedAt": "2024-08-02"
+    },
+    {
+      "id": "ACC-1004",
+      "customerId": "CUS-003",
+      "type": "empresarial",
+      "pixKey": "12345678000190",
+      "openingBalance": 23400,
+      "status": "ativa",
+      "openedAt": "2020-01-20"
+    },
+    {
+      "id": "ACC-1005",
+      "customerId": "CUS-004",
+      "type": "empresarial",
+      "pixKey": "98765432000155",
+      "openingBalance": 88000,
+      "status": "ativa",
+      "openedAt": "2022-06-11"
+    },
+    {
+      "id": "ACC-1006",
+      "customerId": "CUS-005",
+      "type": "corrente",
+      "pixKey": "+5511999990005",
+      "openingBalance": 4300,
+      "status": "ativa",
+      "openedAt": "2023-02-05"
+    }
   ],
   "transactions": [
-    { "id": "TRX-0001", "accountId": "ACC-1001", "date": "2026-08-01T09:12:00Z", "direction": "credit", "amount": 9800, "type": "salario", "channel": "transferencia", "description": "Salario mensal", "counterparty": "Prefeitura GTA7 Lab" },
-    { "id": "TRX-0002", "accountId": "ACC-1001", "date": "2026-08-02T18:40:00Z", "direction": "debit", "amount": 156.9, "type": "compra_cartao", "channel": "cartao_credito", "description": "Jantar", "counterparty": "Restaurante Bella Notte" },
-    { "id": "TRX-0003", "accountId": "ACC-1001", "date": "2026-08-05T11:05:00Z", "direction": "debit", "amount": 1200, "type": "pix_out", "channel": "app", "description": "Aluguel", "counterparty": "Imobiliaria Centro" },
-    { "id": "TRX-0004", "accountId": "ACC-1001", "date": "2026-08-10T14:22:00Z", "direction": "debit", "amount": 89.9, "type": "pagamento", "channel": "app", "description": "Conta de energia", "counterparty": "GTA7 Energia" },
-    { "id": "TRX-0005", "accountId": "ACC-1001", "date": "2026-08-18T20:01:00Z", "direction": "debit", "amount": 3000, "type": "investimento", "channel": "app", "description": "Aplicacao em CDB", "counterparty": "Bank of Sajo Investimentos" },
-    { "id": "TRX-0006", "accountId": "ACC-1002", "date": "2026-08-18T20:02:00Z", "direction": "credit", "amount": 3000, "type": "investimento", "channel": "app", "description": "Aporte poupanca", "counterparty": "Ana Ribeiro" },
-    { "id": "TRX-0007", "accountId": "ACC-1002", "date": "2026-08-31T23:00:00Z", "direction": "credit", "amount": 1480.2, "type": "rendimento", "channel": "automatico", "description": "Rendimento mensal alto acima de 100k", "counterparty": "Bank of Sajo" },
-    { "id": "TRX-0008", "accountId": "ACC-1003", "date": "2026-08-03T08:30:00Z", "direction": "credit", "amount": 1200, "type": "deposito", "channel": "terminal", "description": "Deposito em terminal", "counterparty": "Bruno Tavares" },
-    { "id": "TRX-0009", "accountId": "ACC-1003", "date": "2026-08-06T19:15:00Z", "direction": "debit", "amount": 45, "type": "compra_cartao", "channel": "cartao_debito", "description": "Ingresso cinema", "counterparty": "Cinema Lumiere GTA7" },
-    { "id": "TRX-0010", "accountId": "ACC-1003", "date": "2026-08-12T10:00:00Z", "direction": "debit", "amount": 200, "type": "saque", "channel": "caixa", "description": "Saque no caixa", "counterparty": "Agencia Centro" },
-    { "id": "TRX-0011", "accountId": "ACC-1003", "date": "2026-08-20T16:45:00Z", "direction": "credit", "amount": 500, "type": "pix_in", "channel": "app", "description": "Ajuda familiar", "counterparty": "Carla Menezes" },
-    { "id": "TRX-0012", "accountId": "ACC-1004", "date": "2026-08-01T21:00:00Z", "direction": "credit", "amount": 4320.55, "type": "recebimento_maquininha", "channel": "maquininha", "description": "Vendas do dia", "counterparty": "Sajo Pay" },
-    { "id": "TRX-0013", "accountId": "ACC-1004", "date": "2026-08-08T21:00:00Z", "direction": "credit", "amount": 3890.1, "type": "recebimento_maquininha", "channel": "maquininha", "description": "Vendas da semana", "counterparty": "Sajo Pay" },
-    { "id": "TRX-0014", "accountId": "ACC-1004", "date": "2026-08-09T09:00:00Z", "direction": "debit", "amount": 2600, "type": "pagamento", "channel": "internet_banking", "description": "Boleto fornecedor de farinha", "counterparty": "Moinho Sul" },
-    { "id": "TRX-0015", "accountId": "ACC-1004", "date": "2026-08-15T09:00:00Z", "direction": "credit", "amount": 25000, "type": "emprestimo", "channel": "agencia", "description": "Liberacao de capital de giro", "counterparty": "Bank of Sajo Credito" },
-    { "id": "TRX-0016", "accountId": "ACC-1004", "date": "2026-08-25T09:00:00Z", "direction": "debit", "amount": 1150, "type": "pagamento", "channel": "automatico", "description": "Parcela 1/24 capital de giro", "counterparty": "Bank of Sajo Credito" },
-    { "id": "TRX-0017", "accountId": "ACC-1005", "date": "2026-08-02T23:30:00Z", "direction": "credit", "amount": 15600, "type": "recebimento_maquininha", "channel": "maquininha", "description": "Bilheteria fim de semana", "counterparty": "Sajo Pay" },
-    { "id": "TRX-0018", "accountId": "ACC-1005", "date": "2026-08-07T12:00:00Z", "direction": "debit", "amount": 9800, "type": "pagamento", "channel": "internet_banking", "description": "Folha de pagamento", "counterparty": "Funcionarios" },
-    { "id": "TRX-0019", "accountId": "ACC-1005", "date": "2026-08-14T15:20:00Z", "direction": "debit", "amount": 12000, "type": "acoes_compra", "channel": "app", "description": "Compra de 200 acoes SAJO3", "counterparty": "Bolsa GTA7" },
-    { "id": "TRX-0020", "accountId": "ACC-1005", "date": "2026-08-28T15:20:00Z", "direction": "credit", "amount": 6900, "type": "acoes_venda", "channel": "app", "description": "Venda de 100 acoes SAJO3", "counterparty": "Bolsa GTA7" },
-    { "id": "TRX-0021", "accountId": "ACC-1006", "date": "2026-08-04T13:10:00Z", "direction": "debit", "amount": 320, "type": "pix_out", "channel": "app", "description": "Mercado da semana", "counterparty": "Padaria Pao da Vila" },
-    { "id": "TRX-0022", "accountId": "ACC-1006", "date": "2026-08-11T10:30:00Z", "direction": "debit", "amount": 1800, "type": "cambio", "channel": "agencia", "description": "Compra de 300 USD para viagem", "counterparty": "Bank of Sajo Cambio" },
-    { "id": "TRX-0023", "accountId": "ACC-1006", "date": "2026-08-19T09:00:00Z", "direction": "credit", "amount": 2500, "type": "transferencia", "channel": "internet_banking", "description": "Pagamento de freelance", "counterparty": "Cinema Lumiere GTA7" },
-    { "id": "TRX-0024", "accountId": "ACC-1006", "date": "2026-08-20T16:45:00Z", "direction": "debit", "amount": 500, "type": "pix_out", "channel": "app", "description": "Ajuda familiar", "counterparty": "Bruno Tavares" }
+    {
+      "id": "TRX-0001",
+      "accountId": "ACC-1001",
+      "date": "2026-08-01T09:12:00Z",
+      "direction": "credit",
+      "amount": 9800,
+      "type": "salario",
+      "channel": "transferencia",
+      "description": "Salario mensal",
+      "counterparty": "Prefeitura GTA7 Lab"
+    },
+    {
+      "id": "TRX-0002",
+      "accountId": "ACC-1001",
+      "date": "2026-08-02T18:40:00Z",
+      "direction": "debit",
+      "amount": 156.9,
+      "type": "compra_cartao",
+      "channel": "cartao_credito",
+      "description": "Jantar",
+      "counterparty": "Restaurante Bella Notte"
+    },
+    {
+      "id": "TRX-0003",
+      "accountId": "ACC-1001",
+      "date": "2026-08-05T11:05:00Z",
+      "direction": "debit",
+      "amount": 1200,
+      "type": "pix_out",
+      "channel": "app",
+      "description": "Aluguel",
+      "counterparty": "Imobiliaria Centro"
+    },
+    {
+      "id": "TRX-0004",
+      "accountId": "ACC-1001",
+      "date": "2026-08-10T14:22:00Z",
+      "direction": "debit",
+      "amount": 89.9,
+      "type": "pagamento",
+      "channel": "app",
+      "description": "Conta de energia",
+      "counterparty": "GTA7 Energia"
+    },
+    {
+      "id": "TRX-0005",
+      "accountId": "ACC-1001",
+      "date": "2026-08-18T20:01:00Z",
+      "direction": "debit",
+      "amount": 3000,
+      "type": "investimento",
+      "channel": "app",
+      "description": "Aplicacao em CDB",
+      "counterparty": "Bank of Sajo Investimentos"
+    },
+    {
+      "id": "TRX-0006",
+      "accountId": "ACC-1002",
+      "date": "2026-08-18T20:02:00Z",
+      "direction": "credit",
+      "amount": 3000,
+      "type": "investimento",
+      "channel": "app",
+      "description": "Aporte poupanca",
+      "counterparty": "Ana Ribeiro"
+    },
+    {
+      "id": "TRX-0007",
+      "accountId": "ACC-1002",
+      "date": "2026-08-31T23:00:00Z",
+      "direction": "credit",
+      "amount": 1480.2,
+      "type": "rendimento",
+      "channel": "automatico",
+      "description": "Rendimento mensal alto acima de 100k",
+      "counterparty": "Bank of Sajo"
+    },
+    {
+      "id": "TRX-0008",
+      "accountId": "ACC-1003",
+      "date": "2026-08-03T08:30:00Z",
+      "direction": "credit",
+      "amount": 1200,
+      "type": "deposito",
+      "channel": "terminal",
+      "description": "Deposito em terminal",
+      "counterparty": "Bruno Tavares"
+    },
+    {
+      "id": "TRX-0009",
+      "accountId": "ACC-1003",
+      "date": "2026-08-06T19:15:00Z",
+      "direction": "debit",
+      "amount": 45,
+      "type": "compra_cartao",
+      "channel": "cartao_debito",
+      "description": "Ingresso cinema",
+      "counterparty": "Cinema Lumiere GTA7"
+    },
+    {
+      "id": "TRX-0010",
+      "accountId": "ACC-1003",
+      "date": "2026-08-12T10:00:00Z",
+      "direction": "debit",
+      "amount": 200,
+      "type": "saque",
+      "channel": "caixa",
+      "description": "Saque no caixa",
+      "counterparty": "Agencia Centro"
+    },
+    {
+      "id": "TRX-0011",
+      "accountId": "ACC-1003",
+      "date": "2026-08-20T16:45:00Z",
+      "direction": "credit",
+      "amount": 500,
+      "type": "pix_in",
+      "channel": "app",
+      "description": "Ajuda familiar",
+      "counterparty": "Carla Menezes"
+    },
+    {
+      "id": "TRX-0012",
+      "accountId": "ACC-1004",
+      "date": "2026-08-01T21:00:00Z",
+      "direction": "credit",
+      "amount": 4320.55,
+      "type": "recebimento_maquininha",
+      "channel": "maquininha",
+      "description": "Vendas do dia",
+      "counterparty": "Sajo Pay"
+    },
+    {
+      "id": "TRX-0013",
+      "accountId": "ACC-1004",
+      "date": "2026-08-08T21:00:00Z",
+      "direction": "credit",
+      "amount": 3890.1,
+      "type": "recebimento_maquininha",
+      "channel": "maquininha",
+      "description": "Vendas da semana",
+      "counterparty": "Sajo Pay"
+    },
+    {
+      "id": "TRX-0014",
+      "accountId": "ACC-1004",
+      "date": "2026-08-09T09:00:00Z",
+      "direction": "debit",
+      "amount": 2600,
+      "type": "pagamento",
+      "channel": "internet_banking",
+      "description": "Boleto fornecedor de farinha",
+      "counterparty": "Moinho Sul"
+    },
+    {
+      "id": "TRX-0015",
+      "accountId": "ACC-1004",
+      "date": "2026-08-15T09:00:00Z",
+      "direction": "credit",
+      "amount": 25000,
+      "type": "emprestimo",
+      "channel": "agencia",
+      "description": "Liberacao de capital de giro",
+      "counterparty": "Bank of Sajo Credito"
+    },
+    {
+      "id": "TRX-0016",
+      "accountId": "ACC-1004",
+      "date": "2026-08-25T09:00:00Z",
+      "direction": "debit",
+      "amount": 1150,
+      "type": "pagamento",
+      "channel": "automatico",
+      "description": "Parcela 1/24 capital de giro",
+      "counterparty": "Bank of Sajo Credito"
+    },
+    {
+      "id": "TRX-0017",
+      "accountId": "ACC-1005",
+      "date": "2026-08-02T23:30:00Z",
+      "direction": "credit",
+      "amount": 15600,
+      "type": "recebimento_maquininha",
+      "channel": "maquininha",
+      "description": "Bilheteria fim de semana",
+      "counterparty": "Sajo Pay"
+    },
+    {
+      "id": "TRX-0018",
+      "accountId": "ACC-1005",
+      "date": "2026-08-07T12:00:00Z",
+      "direction": "debit",
+      "amount": 9800,
+      "type": "pagamento",
+      "channel": "internet_banking",
+      "description": "Folha de pagamento",
+      "counterparty": "Funcionarios"
+    },
+    {
+      "id": "TRX-0019",
+      "accountId": "ACC-1005",
+      "date": "2026-08-14T15:20:00Z",
+      "direction": "debit",
+      "amount": 12000,
+      "type": "acoes_compra",
+      "channel": "app",
+      "description": "Compra de 200 acoes SAJO3",
+      "counterparty": "Bolsa GTA7"
+    },
+    {
+      "id": "TRX-0020",
+      "accountId": "ACC-1005",
+      "date": "2026-08-28T15:20:00Z",
+      "direction": "credit",
+      "amount": 6900,
+      "type": "acoes_venda",
+      "channel": "app",
+      "description": "Venda de 100 acoes SAJO3",
+      "counterparty": "Bolsa GTA7"
+    },
+    {
+      "id": "TRX-0021",
+      "accountId": "ACC-1006",
+      "date": "2026-08-04T13:10:00Z",
+      "direction": "debit",
+      "amount": 320,
+      "type": "pix_out",
+      "channel": "app",
+      "description": "Mercado da semana",
+      "counterparty": "Padaria Pao da Vila"
+    },
+    {
+      "id": "TRX-0022",
+      "accountId": "ACC-1006",
+      "date": "2026-08-11T10:30:00Z",
+      "direction": "debit",
+      "amount": 1800,
+      "type": "cambio",
+      "channel": "agencia",
+      "description": "Compra de 300 USD para viagem",
+      "counterparty": "Bank of Sajo Cambio"
+    },
+    {
+      "id": "TRX-0023",
+      "accountId": "ACC-1006",
+      "date": "2026-08-19T09:00:00Z",
+      "direction": "credit",
+      "amount": 2500,
+      "type": "transferencia",
+      "channel": "internet_banking",
+      "description": "Pagamento de freelance",
+      "counterparty": "Cinema Lumiere GTA7"
+    },
+    {
+      "id": "TRX-0024",
+      "accountId": "ACC-1006",
+      "date": "2026-08-20T16:45:00Z",
+      "direction": "debit",
+      "amount": 500,
+      "type": "pix_out",
+      "channel": "app",
+      "description": "Ajuda familiar",
+      "counterparty": "Bruno Tavares"
+    }
   ],
   "cards": [
-    { "id": "CARD-01", "accountId": "ACC-1001", "brand": "Sajo Black", "kind": "credito", "limit": 25000, "last4": "4417", "status": "ativo" },
-    { "id": "CARD-02", "accountId": "ACC-1003", "brand": "Sajo Jovem", "kind": "debito", "limit": 0, "last4": "9082", "status": "ativo" },
-    { "id": "CARD-03", "accountId": "ACC-1004", "brand": "Sajo Empresas", "kind": "credito", "limit": 60000, "last4": "1130", "status": "ativo" }
+    {
+      "id": "CARD-01",
+      "accountId": "ACC-1001",
+      "brand": "Sajo Black",
+      "kind": "credito",
+      "limit": 25000,
+      "last4": "4417",
+      "status": "ativo"
+    },
+    {
+      "id": "CARD-02",
+      "accountId": "ACC-1003",
+      "brand": "Sajo Jovem",
+      "kind": "debito",
+      "limit": 0,
+      "last4": "9082",
+      "status": "ativo"
+    },
+    {
+      "id": "CARD-03",
+      "accountId": "ACC-1004",
+      "brand": "Sajo Empresas",
+      "kind": "credito",
+      "limit": 60000,
+      "last4": "1130",
+      "status": "ativo"
+    }
   ],
   "loanProducts": [
-    { "id": "LP-01", "name": "Credito pessoal", "monthlyRate": 0.019, "minMonths": 6, "maxMonths": 48, "maxAmount": 50000 },
-    { "id": "LP-02", "name": "Capital de giro", "monthlyRate": 0.015, "minMonths": 6, "maxMonths": 36, "maxAmount": 300000 },
-    { "id": "LP-03", "name": "Financiamento de veiculo", "monthlyRate": 0.012, "minMonths": 12, "maxMonths": 60, "maxAmount": 200000 },
-    { "id": "LP-04", "name": "Financiamento imobiliario", "monthlyRate": 0.009, "minMonths": 60, "maxMonths": 360, "maxAmount": 1200000 },
-    { "id": "LP-05", "name": "Energia solar sustentavel", "monthlyRate": 0.007, "minMonths": 12, "maxMonths": 72, "maxAmount": 80000 }
+    {
+      "id": "LP-01",
+      "name": "Credito pessoal",
+      "monthlyRate": 0.019,
+      "minMonths": 6,
+      "maxMonths": 48,
+      "maxAmount": 50000
+    },
+    {
+      "id": "LP-02",
+      "name": "Capital de giro",
+      "monthlyRate": 0.015,
+      "minMonths": 6,
+      "maxMonths": 36,
+      "maxAmount": 300000
+    },
+    {
+      "id": "LP-03",
+      "name": "Financiamento de veiculo",
+      "monthlyRate": 0.012,
+      "minMonths": 12,
+      "maxMonths": 60,
+      "maxAmount": 200000
+    },
+    {
+      "id": "LP-04",
+      "name": "Financiamento imobiliario",
+      "monthlyRate": 0.009,
+      "minMonths": 60,
+      "maxMonths": 360,
+      "maxAmount": 1200000
+    },
+    {
+      "id": "LP-05",
+      "name": "Energia solar sustentavel",
+      "monthlyRate": 0.007,
+      "minMonths": 12,
+      "maxMonths": 72,
+      "maxAmount": 80000
+    }
   ],
   "investmentProducts": [
-    { "id": "INV-01", "name": "Poupanca Sajo", "annualRate": 0.062, "risk": "baixo", "minAmount": 0 },
-    { "id": "INV-02", "name": "CDB Cidade 110%", "annualRate": 0.118, "risk": "baixo", "minAmount": 1000 },
-    { "id": "INV-03", "name": "CDB Premium 130%", "annualRate": 0.139, "risk": "baixo", "minAmount": 100000 },
-    { "id": "INV-04", "name": "Fundo Acoes GTA7", "annualRate": 0.185, "risk": "alto", "minAmount": 5000 }
+    {
+      "id": "INV-01",
+      "name": "Poupanca Sajo",
+      "annualRate": 0.062,
+      "risk": "baixo",
+      "minAmount": 0
+    },
+    {
+      "id": "INV-02",
+      "name": "CDB Cidade 110%",
+      "annualRate": 0.118,
+      "risk": "baixo",
+      "minAmount": 1000
+    },
+    {
+      "id": "INV-03",
+      "name": "CDB Premium 130%",
+      "annualRate": 0.139,
+      "risk": "baixo",
+      "minAmount": 100000
+    },
+    {
+      "id": "INV-04",
+      "name": "Fundo Acoes GTA7",
+      "annualRate": 0.185,
+      "risk": "alto",
+      "minAmount": 5000
+    },
+    {
+      "id": "INV-05",
+      "name": "FIDC Cidade",
+      "annualRate": 0.152,
+      "risk": "medio",
+      "minAmount": 25000
+    }
   ],
   "stocks": [
-    { "ticker": "SAJO3", "name": "Bank of Sajo", "price": 69.4 },
-    { "ticker": "LUMI3", "name": "Cinema Lumiere GTA7", "price": 21.15 },
-    { "ticker": "PAOV3", "name": "Padaria Pao da Vila", "price": 8.72 }
+    {
+      "ticker": "SAJO3",
+      "name": "Bank of Sajo",
+      "price": 69.4
+    },
+    {
+      "ticker": "LUMI3",
+      "name": "Cinema Lumiere GTA7",
+      "price": 21.15
+    },
+    {
+      "ticker": "PAOV3",
+      "name": "Padaria Pao da Vila",
+      "price": 8.72
+    }
   ],
   "partners": [
-    { "entity": "restaurants", "name": "Restaurante Bella Notte", "benefit": "15% de cashback para clientes Sajo" },
-    { "entity": "cinema", "name": "Cinema Lumiere GTA7", "benefit": "Ingresso com 30% off no cartao Sajo" },
-    { "entity": "transport", "name": "GTA7 Mobilidade", "benefit": "Passagens sem tarifa no debito Sajo" }
+    {
+      "entity": "restaurants",
+      "name": "Restaurante Bella Notte",
+      "benefit": "15% de cashback para clientes Sajo"
+    },
+    {
+      "entity": "cinema",
+      "name": "Cinema Lumiere GTA7",
+      "benefit": "Ingresso com 30% off no cartao Sajo"
+    },
+    {
+      "entity": "transport",
+      "name": "GTA7 Mobilidade",
+      "benefit": "Passagens sem tarifa no debito Sajo"
+    }
+  ],
+  "services": [
+    {
+      "id": "SVC-01",
+      "name": "Conta corrente pessoal",
+      "category": "contas",
+      "description": "Conta digital sem tarifas para o dia a dia, com chave PIX propria.",
+      "tool": "open_account"
+    },
+    {
+      "id": "SVC-02",
+      "name": "Conta poupanca",
+      "category": "contas",
+      "description": "Guarda o dinheiro rendendo, com resgate a qualquer momento.",
+      "tool": "open_account"
+    },
+    {
+      "id": "SVC-03",
+      "name": "Conta corrente empresarial",
+      "category": "contas",
+      "description": "Para comerciantes e empresas da cidade, com recebimento de maquininha.",
+      "tool": "open_account"
+    },
+    {
+      "id": "SVC-04",
+      "name": "Cartao de debito",
+      "category": "cartoes",
+      "description": "Debita direto da conta, sem anuidade.",
+      "tool": "issue_card"
+    },
+    {
+      "id": "SVC-05",
+      "name": "Cartao de credito",
+      "category": "cartoes",
+      "description": "Limite conforme o relacionamento, com fatura mensal.",
+      "tool": "issue_card"
+    },
+    {
+      "id": "SVC-06",
+      "name": "Mobile banking",
+      "category": "canais",
+      "description": "Aplicativo do banco para consultar saldo, pagar e transferir pelo celular."
+    },
+    {
+      "id": "SVC-07",
+      "name": "Internet banking",
+      "category": "canais",
+      "description": "Mesmo banco pelo navegador, com extrato completo e pagamentos."
+    },
+    {
+      "id": "SVC-08",
+      "name": "Deposito de cheque pelo celular",
+      "category": "canais",
+      "description": "Fotografe o cheque no aplicativo e o valor entra na conta apos a compensacao."
+    },
+    {
+      "id": "SVC-09",
+      "name": "Pagamento de contas e boletos",
+      "category": "pagamentos",
+      "description": "Agua, luz, boletos e tributos pagos direto da conta.",
+      "tool": "pay_bill"
+    },
+    {
+      "id": "SVC-10",
+      "name": "Transferencias e PIX",
+      "category": "pagamentos",
+      "description": "PIX entre pessoas e empresas da cidade, na hora e sem taxa.",
+      "tool": "send_pix"
+    },
+    {
+      "id": "SVC-11",
+      "name": "Rede de caixas eletronicos",
+      "category": "canais",
+      "description": "Saques e depositos nos terminais espalhados pelos bairros da cidade."
+    },
+    {
+      "id": "SVC-12",
+      "name": "Emprestimo pessoal",
+      "category": "credito",
+      "description": "Credito rapido para quem ja e cliente, sem burocracia.",
+      "tool": "request_loan"
+    },
+    {
+      "id": "SVC-13",
+      "name": "Financiamento de veiculo",
+      "category": "credito",
+      "description": "Compra de carro ou moto com parcelas fixas em ate 60 meses.",
+      "tool": "request_loan"
+    },
+    {
+      "id": "SVC-14",
+      "name": "Financiamento imobiliario",
+      "category": "credito",
+      "description": "Compra da casa propria em ate 360 meses, com a menor taxa do banco.",
+      "tool": "request_loan"
+    },
+    {
+      "id": "SVC-15",
+      "name": "Emprestimo para pequenas empresas",
+      "category": "credito",
+      "description": "Capital de giro para o comercio local, com analise no mesmo dia.",
+      "tool": "request_loan"
+    },
+    {
+      "id": "SVC-16",
+      "name": "Linha de credito empresarial",
+      "category": "credito",
+      "description": "Limite pre-aprovado que a empresa usa quando precisa e paga pelo que usar.",
+      "tool": "request_loan"
+    },
+    {
+      "id": "SVC-17",
+      "name": "Atendimento presencial",
+      "category": "atendimento",
+      "description": "Agencia no Centro com gerente de relacionamento e salas para reuniao."
+    },
+    {
+      "id": "SVC-18",
+      "name": "Protecao contra fraude",
+      "category": "seguranca",
+      "description": "Monitoramento das transacoes, alerta na hora e suporte 24 horas."
+    },
+    {
+      "id": "SVC-19",
+      "name": "Educacao financeira",
+      "category": "comunidade",
+      "description": "Oficinas gratuitas sobre orcamento, credito e investimento para moradores."
+    },
+    {
+      "id": "SVC-20",
+      "name": "Programa para novos clientes",
+      "category": "comunidade",
+      "description": "Primeira conta sem tarifa, cartao gratis e acompanhamento do gerente nos primeiros meses."
+    },
+    {
+      "id": "SVC-21",
+      "name": "FIDC - fundo de direitos creditorios",
+      "category": "investimentos",
+      "description": "Fundo que compra recebiveis de empresas da cidade e distribui o rendimento aos cotistas.",
+      "tool": "invest"
+    }
   ]
 }

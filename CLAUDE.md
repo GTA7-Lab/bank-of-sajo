@@ -19,12 +19,16 @@ que a consome pelo endpoint MCP publicado — nao pelo codigo.
 **Regra de saldo:** saldo = `openingBalance` + creditos − debitos das transacoes. O JSON nao guarda saldo; ele e sempre derivado (`getBalance`).
 
 ## MCP tools (`app/api/mcp/route.ts`, endpoint `/api/mcp`, transporte HTTP)
-| tool | parametros | retorno |
-|---|---|---|
-| `get_account_balance` | `account` (ID ou chave PIX) | conta, titular, saldo, 5 ultimas transacoes |
-| `search_transactions` | `account?, type?, direction?, minAmount?, from?, to?, search?, limit?` | `{count, currency, transactions[]}` |
-| `send_pix` | `from, to, amount, description?` | `{ok, transactionId, balanceAfter}` ou `{ok:false, error}` |
-| `simulate_loan` | `product, amount, months` | parcela, total e juros (tabela Price) |
+16 tools. Clientes (CRUD): `create_customer`, `get_customer`, `list_customers`,
+`update_customer`, `delete_customer`. Contas e dinheiro: `open_account`,
+`get_account_balance`, `search_transactions`, `send_pix`, `pay_bill`, `issue_card`.
+Produtos: `list_services`, `list_products`, `simulate_loan`, `request_loan`, `invest`.
+Parametros de cada uma no proprio `route.ts` e em `manifest.json`.
+
+**Regra de resposta:** o texto do MCP e escrito para gente — conversa, sem jargao, valores
+em R$ e datas em dd/mm/aaaa. Os dados estruturados vao em `structuredContent`, que e o que
+o Core le primeiro (`client.ts` so faz JSON.parse do texto se structuredContent faltar).
+Helper `reply(texto, dados)` no topo do route garante os dois lados.
 
 ## Arquivos principais
 - `lib/bank.ts` — carga do JSON, consultas, PIX e simulacao de credito.
@@ -37,6 +41,12 @@ que a consome pelo endpoint MCP publicado — nao pelo codigo.
 ## Decisoes relevantes
 - Escritas (`send_pix`) ficam em memoria: o disco e somente leitura na Vercel. Reinicio da instancia volta ao JSON original — aceitavel na v1.
 - Saldo derivado das transacoes evita inconsistencia entre saldo e extrato.
+- `delete_customer` recusa encerrar cadastro com saldo em conta, e apaga as transacoes das
+  contas encerradas para nao deixar registro orfao.
+- `create_customer` cria so o cadastro; `open_account` cria cadastro + conta. Cliente sem
+  conta e um estado valido.
+- Datas formatadas a partir do texto ISO, sem passar por `Date`, para o fuso do servidor
+  nao empurrar um registro de hoje para ontem.
 - Sem auth, sem banco, sem Docker (limitacoes acordadas da v1).
 
 ## Status
