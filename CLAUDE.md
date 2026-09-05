@@ -45,7 +45,8 @@ v1 completa e no ar: https://gta7-lab-bank-tbone3.vercel.app (projeto Vercel
 Registrada no Core sob a tag `finance`; pedido "ver o extrato de pix da cidade" percorre
 Core -> bank e volta com transacoes.
 
-## Proxima tarefa
-Ligar o deploy continuo do projeto Vercel `gta7-lab-bank` a este repo
-(Settings > Git > Connect, Root Directory = raiz). Hoje o deploy e manual:
-`vercel deploy --prod`. A URL publicada nao muda, entao o registro no Core continua valido.
+## Deploy
+Deploy continuo ligado: o projeto Vercel `gta7-lab-bank` (time tbone3) esta conectado a
+este repo, entao todo push no `main` publica em https://gta7-lab-bank-tbone3.vercel.app.
+Root Directory = raiz. O repo e publico porque o plano Hobby da Vercel nao conecta repo
+privado de organizacao.
