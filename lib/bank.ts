@@ -663,3 +663,164 @@ export function payBill(accountKey: string, payee: string, amount: number, descr
     date,
   };
 }
+
+// --- CRUD de produtos e servicos (restrito pela palavra magica) ---
+
+export const MAGIC_WORD = process.env.BANK_MAGIC_WORD ?? "abre-te-sajo";
+
+export function checkMagicWord(word?: string): string | null {
+  if (!word || word.trim().toLowerCase() !== MAGIC_WORD.toLowerCase()) {
+    return "Essa operação é restrita à equipe do Bank of Sajo. Me diga a palavra mágica para continuar.";
+  }
+  return null;
+}
+
+export type ProductKind = "loan" | "investment";
+
+const catalogOf = (kind: ProductKind) => (kind === "loan" ? db.loanProducts : db.investmentProducts);
+
+function findProduct(kind: ProductKind, key: string) {
+  const k = key.trim().toLowerCase();
+  return (catalogOf(kind) as { id: string; name: string }[]).find(
+    (p) => p.id.toLowerCase() === k || p.name.toLowerCase() === k
+  );
+}
+
+export type CatalogResult<T> = { ok: true; item: T; changed?: string[] } | { ok: false; error: string };
+
+export type LoanProductInput = {
+  name: string;
+  monthlyRate: number;
+  minMonths: number;
+  maxMonths: number;
+  maxAmount: number;
+};
+
+export type InvestmentProductInput = {
+  name: string;
+  annualRate: number;
+  risk?: string;
+  minAmount?: number;
+};
+
+export function createProduct(
+  kind: ProductKind,
+  input: LoanProductInput | InvestmentProductInput
+): CatalogResult<Record<string, unknown>> {
+  const name = input.name?.trim();
+  if (!name) return { ok: false, error: "Preciso do nome do produto." };
+  if (findProduct(kind, name)) return { ok: false, error: `Já existe um produto chamado "${name}".` };
+
+  if (kind === "loan") {
+    const i = input as LoanProductInput;
+    if (!(i.monthlyRate > 0)) return { ok: false, error: "A taxa mensal precisa ser maior que zero." };
+    if (!(i.minMonths > 0) || i.maxMonths < i.minMonths) {
+      return { ok: false, error: "O prazo mínimo precisa ser positivo e menor que o máximo." };
+    }
+    if (!(i.maxAmount > 0)) return { ok: false, error: "O valor máximo precisa ser maior que zero." };
+    const item = {
+      id: nextId("LP", db.loanProducts.map((p) => p.id), 2),
+      name,
+      monthlyRate: i.monthlyRate,
+      minMonths: i.minMonths,
+      maxMonths: i.maxMonths,
+      maxAmount: i.maxAmount,
+    };
+    db.loanProducts.push(item);
+    return { ok: true, item };
+  }
+
+  const i = input as InvestmentProductInput;
+  if (!(i.annualRate > 0)) return { ok: false, error: "O rendimento anual precisa ser maior que zero." };
+  const item = {
+    id: nextId("INV", db.investmentProducts.map((p) => p.id), 2),
+    name,
+    annualRate: i.annualRate,
+    risk: i.risk?.trim() || "baixo",
+    minAmount: i.minAmount ?? 0,
+  };
+  db.investmentProducts.push(item);
+  return { ok: true, item };
+}
+
+export function updateProduct(
+  kind: ProductKind,
+  key: string,
+  changes: Record<string, string | number | undefined>
+): CatalogResult<Record<string, unknown>> {
+  const item = findProduct(kind, key) as Record<string, string | number> | undefined;
+  if (!item) return { ok: false, error: `Não encontrei o produto "${key}".` };
+
+  const campos =
+    kind === "loan"
+      ? ["name", "monthlyRate", "minMonths", "maxMonths", "maxAmount"]
+      : ["name", "annualRate", "risk", "minAmount"];
+
+  const changed: string[] = [];
+  for (const campo of campos) {
+    const valor = changes[campo];
+    if (valor !== undefined && valor !== "" && valor !== item[campo]) {
+      item[campo] = valor;
+      changed.push(campo);
+    }
+  }
+  if (changed.length === 0) return { ok: false, error: "Não veio nenhum dado novo para mudar." };
+  return { ok: true, item, changed };
+}
+
+export function deleteProduct(kind: ProductKind, key: string): CatalogResult<Record<string, unknown>> {
+  const item = findProduct(kind, key);
+  if (!item) return { ok: false, error: `Não encontrei o produto "${key}".` };
+  const lista = catalogOf(kind) as { id: string }[];
+  lista.splice(lista.findIndex((p) => p.id === item.id), 1);
+  return { ok: true, item: item as Record<string, unknown> };
+}
+
+function findService(key: string) {
+  const k = key.trim().toLowerCase();
+  return db.services.find((s) => s.id.toLowerCase() === k || s.name.toLowerCase() === k);
+}
+
+export function createService(input: {
+  name: string;
+  category: string;
+  description: string;
+}): CatalogResult<Record<string, unknown>> {
+  const name = input.name?.trim();
+  const category = input.category?.trim().toLowerCase();
+  const description = input.description?.trim();
+  if (!name) return { ok: false, error: "Preciso do nome do serviço." };
+  if (!category) return { ok: false, error: "Preciso da categoria do serviço." };
+  if (!description) return { ok: false, error: "Preciso de uma descrição do serviço." };
+  if (findService(name)) return { ok: false, error: `Já existe um serviço chamado "${name}".` };
+
+  const item = { id: nextId("SVC", db.services.map((s) => s.id), 2), name, category, description };
+  db.services.push(item);
+  return { ok: true, item };
+}
+
+export function updateService(
+  key: string,
+  changes: { name?: string; category?: string; description?: string }
+): CatalogResult<Record<string, unknown>> {
+  const item = findService(key) as Record<string, string> | undefined;
+  if (!item) return { ok: false, error: `Não encontrei o serviço "${key}".` };
+
+  const changed: string[] = [];
+  for (const campo of ["name", "category", "description"] as const) {
+    const valor = changes[campo]?.trim();
+    if (valor && valor !== item[campo]) {
+      item[campo] = campo === "category" ? valor.toLowerCase() : valor;
+      changed.push(campo);
+    }
+  }
+  if (changed.length === 0) return { ok: false, error: "Não veio nenhum dado novo para mudar." };
+  return { ok: true, item, changed };
+}
+
+export function deleteService(key: string): CatalogResult<Record<string, unknown>> {
+  const item = findService(key);
+  if (!item) return { ok: false, error: `Não encontrei o serviço "${key}".` };
+  db.services.splice(db.services.findIndex((s) => s.id === item.id), 1);
+  return { ok: true, item: item as Record<string, unknown> };
+}

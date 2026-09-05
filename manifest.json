@@ -17,7 +17,9 @@
     "listar_produtos",
     "simular_credito",
     "contratar_credito",
-    "investir"
+    "investir",
+    "gerenciar_produtos",
+    "gerenciar_servicos"
   ],
   "mcp": {
     "transport": "http",
@@ -86,6 +88,30 @@
       {
         "name": "delete_customer",
         "description": "Encerra o cadastro de um cliente e as contas zeradas dele."
+      },
+      {
+        "name": "create_product",
+        "description": "Cria linha de credito ou investimento. Restrito: exige a palavra magica."
+      },
+      {
+        "name": "update_product",
+        "description": "Muda uma linha de credito ou investimento. Restrito: exige a palavra magica."
+      },
+      {
+        "name": "delete_product",
+        "description": "Tira uma linha de credito ou investimento do catalogo. Restrito: exige a palavra magica."
+      },
+      {
+        "name": "create_service",
+        "description": "Cria um servico do banco. Restrito: exige a palavra magica."
+      },
+      {
+        "name": "update_service",
+        "description": "Muda um servico do banco. Restrito: exige a palavra magica."
+      },
+      {
+        "name": "delete_service",
+        "description": "Tira um servico do banco. Restrito: exige a palavra magica."
       }
     ]
   },
@@ -94,5 +120,5 @@
     "transactions": "GET /api/transactions?account=&type=&limit=",
     "manifest": "GET /api/manifest"
   },
-  "version": "0.2.0"
+  "version": "0.3.0"
 }

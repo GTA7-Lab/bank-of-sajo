@@ -33,4 +33,13 @@ await call("update_customer", { customer: "Joao Pereira", district: "Centro", se
 await call("list_customers", { search: "Centro", limit: 5 });
 await call("delete_customer", { customer: "Joao Pereira" });
 await call("delete_customer", { customer: "Ana Ribeiro" });
-await c.close();
+console.log("\n=== catalogo restrito ===");
+await call("create_product", { kind: "loan", name: "Credito estudantil", monthlyRate: 0.008, minMonths: 12, maxMonths: 60, maxAmount: 40000 });
+await call("create_product", { magicWord: "errada", kind: "loan", name: "Credito estudantil", monthlyRate: 0.008, minMonths: 12, maxMonths: 60, maxAmount: 40000 });
+await call("create_product", { magicWord: "abre-te-sajo", kind: "loan", name: "Credito estudantil", monthlyRate: 0.008, minMonths: 12, maxMonths: 60, maxAmount: 40000 });
+await call("update_product", { magicWord: "abre-te-sajo", kind: "loan", product: "Credito estudantil", monthlyRate: 0.006 });
+await call("delete_product", { magicWord: "abre-te-sajo", kind: "loan", product: "Credito estudantil" });
+await call("create_service", { magicWord: "abre-te-sajo", name: "Seguro residencial", category: "seguranca", description: "Protege a casa do cliente contra incendio e roubo." });
+await call("update_service", { magicWord: "abre-te-sajo", service: "Seguro residencial", description: "Protege a casa contra incendio, roubo e danos eletricos." });
+await call("delete_service", { service: "Seguro residencial" });
+await call("delete_service", { magicWord: "abre-te-sajo", service: "Seguro residencial" });

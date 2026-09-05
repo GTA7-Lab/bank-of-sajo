@@ -53,6 +53,17 @@ As respostas são escritas para gente ler — conversa, sem jargão. Os dados v�
 | `pay_bill` | paga contas e boletos |
 | `issue_card` | emite cartão de débito ou crédito |
 
+**Catálogo — restrito pela palavra mágica**
+
+`create_product`, `update_product`, `delete_product`, `create_service`, `update_service`,
+`delete_service` mexem no que o banco oferece, então só rodam com o parâmetro `magicWord`.
+Sem ele — ou com a palavra errada — a tool recusa educadamente, sem erro técnico.
+
+A palavra padrão é `abre-te-sajo`. Para trocar, defina a variável de ambiente
+`BANK_MAGIC_WORD` no projeto da Vercel. Vale dizer o que isso é e o que não é: uma trava
+contra alteração acidental do catálogo, não autenticação — o endpoint é público e a
+palavra viaja como parâmetro comum.
+
 **Produtos**
 
 | tool | o que faz |

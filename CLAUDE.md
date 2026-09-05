@@ -19,10 +19,15 @@ que a consome pelo endpoint MCP publicado — nao pelo codigo.
 **Regra de saldo:** saldo = `openingBalance` + creditos − debitos das transacoes. O JSON nao guarda saldo; ele e sempre derivado (`getBalance`).
 
 ## MCP tools (`app/api/mcp/route.ts`, endpoint `/api/mcp`, transporte HTTP)
-16 tools. Clientes (CRUD): `create_customer`, `get_customer`, `list_customers`,
+22 tools. Clientes (CRUD): `create_customer`, `get_customer`, `list_customers`,
 `update_customer`, `delete_customer`. Contas e dinheiro: `open_account`,
 `get_account_balance`, `search_transactions`, `send_pix`, `pay_bill`, `issue_card`.
 Produtos: `list_services`, `list_products`, `simulate_loan`, `request_loan`, `invest`.
+Catalogo (restrito): `create_product`, `update_product`, `delete_product`,
+`create_service`, `update_service`, `delete_service` — exigem o parametro `magicWord`,
+que vale `BANK_MAGIC_WORD` (padrao `abre-te-sajo`). O parametro e opcional no schema de
+proposito: assim a recusa e uma frase amigavel, e nao um erro de validacao do Zod.
+Nao e autenticacao — o endpoint e publico; e uma trava contra mudanca acidental.
 Parametros de cada uma no proprio `route.ts` e em `manifest.json`.
 
 **Regra de resposta:** o texto do MCP e escrito para gente — conversa, sem jargao, valores

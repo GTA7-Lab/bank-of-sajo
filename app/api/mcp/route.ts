@@ -2,7 +2,14 @@ import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 import {
   accountStatement,
+  checkMagicWord,
   createCustomer,
+  createProduct,
+  createService,
+  deleteProduct,
+  deleteService,
+  updateProduct,
+  updateService,
   customerDetails,
   deleteCustomer,
   findCustomer,
@@ -38,6 +45,23 @@ const dia = (iso: string) => {
   return `${d}/${m}/${y}`;
 };
 const pct = (r: number) => `${(r * 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%`;
+const ROTULOS: Record<string, string> = {
+  name: "nome",
+  monthlyRate: "juros ao mês",
+  minMonths: "prazo mínimo",
+  maxMonths: "prazo máximo",
+  maxAmount: "valor máximo",
+  annualRate: "rendimento anual",
+  risk: "risco",
+  minAmount: "aplicação mínima",
+  category: "categoria",
+  description: "descrição",
+  district: "bairro",
+  segment: "perfil",
+  manager: "gerente",
+};
+const rotular = (campos: string[] = []) => campos.map((c) => ROTULOS[c] ?? c).join(", ");
+
 const nomeDaConta = (id: string) => {
   const conta = findAccount(id);
   return conta ? customerOf(conta)?.name ?? id : id;
@@ -327,15 +351,9 @@ const handler = createMcpHandler(
       async ({ customer, ...mudancas }) => {
         const r = updateCustomer(customer, mudancas);
         if (!r.ok) return reply(r.error, { ok: false, error: r.error });
-        const rotulo: Record<string, string> = {
-          name: "nome",
-          district: "bairro",
-          segment: "perfil",
-          manager: "gerente",
-        };
         const c = r.customer;
         return reply(
-          `Cadastro de ${c.name} atualizado — mudou ${r.changed.map((x) => rotulo[x] ?? x).join(", ")}.\n\n` +
+          `Cadastro de ${c.name} atualizado — mudou ${rotular(r.changed)}.\n\n` +
             `• Perfil: ${c.segment} · ${c.type}\n` +
             `• Bairro: ${c.district}\n` +
             `• Gerente: ${c.manager}`,
@@ -429,6 +447,136 @@ const handler = createMcpHandler(
             `O saldo da conta ${r.accountId} agora é ${brl(r.balanceAfter)}.`,
           { ...r }
         );
+      }
+    );
+
+    // As tools abaixo mexem no catalogo do banco, entao pedem a palavra magica.
+    server.tool(
+      "create_product",
+      "Cria uma linha de credito ou um investimento no catalogo do banco. Restrito: exige a palavra magica.",
+      {
+        magicWord: z.string().optional().describe("Palavra magica da equipe do banco"),
+        kind: z.enum(["loan", "investment"]).describe("loan para credito, investment para investimento"),
+        name: z.string(),
+        monthlyRate: z.number().optional().describe("Juros ao mes, para credito. Ex 0.019"),
+        minMonths: z.number().int().optional().describe("Prazo minimo, para credito"),
+        maxMonths: z.number().int().optional().describe("Prazo maximo, para credito"),
+        maxAmount: z.number().optional().describe("Valor maximo, para credito"),
+        annualRate: z.number().optional().describe("Rendimento ao ano, para investimento. Ex 0.118"),
+        risk: z.string().optional().describe("baixo, medio ou alto, para investimento"),
+        minAmount: z.number().optional().describe("Aplicacao minima, para investimento"),
+      },
+      async ({ magicWord, kind, ...dados }) => {
+        const barrado = checkMagicWord(magicWord);
+        if (barrado) return reply(barrado, { ok: false, error: "palavra mágica ausente ou incorreta" });
+        const r = createProduct(kind, dados as never);
+        if (!r.ok) return reply(r.error, { ok: false, error: r.error });
+        const nome = r.item.name as string;
+        return reply(
+          `Pronto! ${nome} entrou no catálogo do banco com o código ${r.item.id}. Já aparece para os clientes.`,
+          { ...r }
+        );
+      }
+    );
+
+    server.tool(
+      "update_product",
+      "Muda os dados de uma linha de credito ou investimento. Restrito: exige a palavra magica.",
+      {
+        magicWord: z.string().optional().describe("Palavra magica da equipe do banco"),
+        kind: z.enum(["loan", "investment"]),
+        product: z.string().describe("Nome ou codigo do produto"),
+        name: z.string().optional(),
+        monthlyRate: z.number().optional(),
+        minMonths: z.number().int().optional(),
+        maxMonths: z.number().int().optional(),
+        maxAmount: z.number().optional(),
+        annualRate: z.number().optional(),
+        risk: z.string().optional(),
+        minAmount: z.number().optional(),
+      },
+      async ({ magicWord, kind, product, ...mudancas }) => {
+        const barrado = checkMagicWord(magicWord);
+        if (barrado) return reply(barrado, { ok: false, error: "palavra mágica ausente ou incorreta" });
+        const r = updateProduct(kind, product, mudancas as never);
+        if (!r.ok) return reply(r.error, { ok: false, error: r.error });
+        return reply(
+          `${r.item.name} atualizado — mudou ${rotular(r.changed)}.`,
+          { ...r }
+        );
+      }
+    );
+
+    server.tool(
+      "delete_product",
+      "Tira uma linha de credito ou investimento do catalogo. Restrito: exige a palavra magica.",
+      {
+        magicWord: z.string().optional().describe("Palavra magica da equipe do banco"),
+        kind: z.enum(["loan", "investment"]),
+        product: z.string().describe("Nome ou codigo do produto"),
+      },
+      async ({ magicWord, kind, product }) => {
+        const barrado = checkMagicWord(magicWord);
+        if (barrado) return reply(barrado, { ok: false, error: "palavra mágica ausente ou incorreta" });
+        const r = deleteProduct(kind, product);
+        if (!r.ok) return reply(r.error, { ok: false, error: r.error });
+        return reply(`${r.item.name} saiu do catálogo. Não vai mais aparecer para os clientes.`, { ...r });
+      }
+    );
+
+    server.tool(
+      "create_service",
+      "Cria um servico do banco (contas, cartoes, canais, pagamentos, credito, investimentos, atendimento, seguranca, comunidade). Restrito: exige a palavra magica.",
+      {
+        magicWord: z.string().optional().describe("Palavra magica da equipe do banco"),
+        name: z.string(),
+        category: z.string().describe("Ex: contas, cartoes, canais, pagamentos, credito, atendimento"),
+        description: z.string().describe("Uma frase explicando o servico para o cliente"),
+      },
+      async ({ magicWord, ...dados }) => {
+        const barrado = checkMagicWord(magicWord);
+        if (barrado) return reply(barrado, { ok: false, error: "palavra mágica ausente ou incorreta" });
+        const r = createService(dados);
+        if (!r.ok) return reply(r.error, { ok: false, error: r.error });
+        return reply(
+          `Serviço criado: ${r.item.name} (${r.item.id}), na categoria ${r.item.category}.`,
+          { ...r }
+        );
+      }
+    );
+
+    server.tool(
+      "update_service",
+      "Muda o nome, a categoria ou a descricao de um servico. Restrito: exige a palavra magica.",
+      {
+        magicWord: z.string().optional().describe("Palavra magica da equipe do banco"),
+        service: z.string().describe("Nome ou codigo do servico"),
+        name: z.string().optional(),
+        category: z.string().optional(),
+        description: z.string().optional(),
+      },
+      async ({ magicWord, service, ...mudancas }) => {
+        const barrado = checkMagicWord(magicWord);
+        if (barrado) return reply(barrado, { ok: false, error: "palavra mágica ausente ou incorreta" });
+        const r = updateService(service, mudancas);
+        if (!r.ok) return reply(r.error, { ok: false, error: r.error });
+        return reply(`${r.item.name} atualizado — mudou ${rotular(r.changed)}.`, { ...r });
+      }
+    );
+
+    server.tool(
+      "delete_service",
+      "Tira um servico da lista do banco. Restrito: exige a palavra magica.",
+      {
+        magicWord: z.string().optional().describe("Palavra magica da equipe do banco"),
+        service: z.string().describe("Nome ou codigo do servico"),
+      },
+      async ({ magicWord, service }) => {
+        const barrado = checkMagicWord(magicWord);
+        if (barrado) return reply(barrado, { ok: false, error: "palavra mágica ausente ou incorreta" });
+        const r = deleteService(service);
+        if (!r.ok) return reply(r.error, { ok: false, error: r.error });
+        return reply(`${r.item.name} não faz mais parte dos serviços do banco.`, { ...r });
       }
     );
   },
