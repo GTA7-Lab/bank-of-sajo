@@ -42,6 +42,23 @@ export const partners = db.partners;
 
 const round = (n: number) => Math.round(n * 100) / 100;
 
+// O Core manda a frase inteira do pedido como termo de busca ("ver o extrato de
+// pix da cidade"), entao alem da expressao completa aceitamos qualquer palavra
+// relevante dela. As palavras de ligacao ficam de fora para nao casar tudo.
+const STOPWORDS = new Set([
+  "para", "por", "com", "sem", "meu", "meus", "minha", "minhas", "quero", "ver",
+  "mostre", "mostrar", "todas", "todos", "ultimas", "ultimos", "últimas", "últimos",
+  "the", "my", "show", "list",
+]);
+
+function matchesTerm(haystack: string, term: string): boolean {
+  if (haystack.includes(term)) return true;
+  return term
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter((w) => w.length >= 3 && !STOPWORDS.has(w))
+    .some((w) => haystack.includes(w));
+}
+
 export function listAccounts(): Account[] {
   return db.accounts;
 }
@@ -91,7 +108,7 @@ export function searchTransactions(f: TransactionFilters = {}): Transaction[] {
       if (f.to && t.date > f.to) return false;
       if (term) {
         const haystack = `${t.description} ${t.counterparty} ${t.type} ${t.channel}`.toLowerCase();
-        if (!haystack.includes(term)) return false;
+        if (!matchesTerm(haystack, term)) return false;
       }
       return true;
     })

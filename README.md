@@ -61,12 +61,19 @@ primeiro ponto a trocar quando a cidade precisar de persistência real.
 A entidade se descreve em [`manifest.json`](manifest.json) (id, nome, transporte, tools) e
 serve o mesmo conteúdo em `GET /api/manifest`.
 
-Vale um aviso para quem for registrar no Core: as tags do léxico hoje são de passeio
-(`food`, `music`, `movie`, `event`, `lodging`, `transport`, `activity`) e nenhuma cobre
-serviço bancário. Registrar o banco pede uma tag nova — `finance`, por exemplo — com as
-palavras-chave dela em `core/src/lexicon.ts`. As tools daqui também não são de busca por
-lugar: respondem sobre uma conta ou simulam um valor, então entram no Core como consulta
-direta, não nas combinações entre entidades.
+A entidade está registrada em [`core/data/entities.json`](../../core/data/entities.json)
+sob a tag **`finance`**, cujas palavras-chave vivem em
+[`core/src/lexicon.ts`](../../core/src/lexicon.ts) — banco, saldo, extrato, pix, boleto,
+empréstimo, câmbio, investimento e afins.
+
+Só `search_transactions` entra como `kind: "search"`, que é o único tipo que o Core chama
+por conta própria. `get_account_balance`, `simulate_loan` e principalmente `send_pix`
+ficam como `other`: movimentar dinheiro precisa de conta de origem, destino e valor
+explícitos, não de uma frase solta interpretada pelo orquestrador.
+
+Como o Core manda a frase inteira do pedido como termo de busca, `searchTransactions`
+aceita tanto a expressão completa quanto qualquer palavra relevante dela — é o que faz
+"ver o extrato de pix da cidade" devolver as transações de PIX em vez de nada.
 
 ## Deploy
 

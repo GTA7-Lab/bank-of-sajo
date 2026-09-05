@@ -39,13 +39,12 @@ Na Vercel, Root Directory = `entities/bank`.
 - Sem auth, sem banco, sem Docker (limitacoes acordadas da v1).
 
 ## Status
-v1 completa: build ok, REST ok, 4 MCP tools testadas via HTTP (local). Merged no monorepo.
-Publicada na Vercel: projeto `gta7-lab-bank`, producao em
-https://gta7-lab-bank-tbone3.vercel.app — pendencias: Vercel Authentication ainda ativa
-(302 -> SSO) e deploy continuo por Git parado na falta de Login Connection do GitHub na
-conta Vercel.
+v1 completa e no ar: https://gta7-lab-bank-tbone3.vercel.app (projeto Vercel
+`gta7-lab-bank`, sem protecao). As 4 MCP tools foram testadas contra essa URL.
+Registrada no Core sob a tag `finance`; pedido "ver o extrato de pix da cidade" percorre
+Core -> bank e volta com transacoes.
 
 ## Proxima tarefa
 1. Desativar Vercel Authentication em Settings > Deployment Protection (senao o Core nao acessa).
-2. Registrar a entidade no Core: precisa de uma tag nova (`finance`) em
-   `core/src/lexicon.ts`, pois as tags atuais sao de passeio e nenhuma cobre banco.
+2. Ligar o deploy continuo por Git (falta Login Connection do GitHub na conta Vercel e
+   Root Directory = `entities/bank`); hoje o deploy e manual via `vercel deploy --prod`.
