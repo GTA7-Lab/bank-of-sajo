@@ -6,7 +6,7 @@ export function GET() {
     name: "Bank of Sajo",
     description:
       "Banco da cidade GTA7 Lab: abertura de contas, saldos, transacoes (PIX, cartao, maquininha, cambio, acoes), financiamento de imovel e veiculo, e investimentos.",
-    version: "0.3.0",
+    version: "0.4.0",
     entityType: "bank",
     mcp: { transport: "http", endpoint: "/api/mcp" },
     tools: [
@@ -15,6 +15,7 @@ export function GET() {
       "open_account",
       "send_pix",
       "pay_bill",
+      "charge_customer",
       "issue_card",
       "list_services",
       "list_products",

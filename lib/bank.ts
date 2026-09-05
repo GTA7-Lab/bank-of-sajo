@@ -117,7 +117,7 @@ export function searchTransactions(f: TransactionFilters = {}): Transaction[] {
 }
 
 export function accountStatement(idOrPixKey: string) {
-  const account = findAccount(idOrPixKey);
+  const account = resolveAccount(idOrPixKey);
   if (!account) return null;
   const customer = customerOf(account);
   return {
@@ -142,8 +142,8 @@ export type PixResult =
   | { ok: false; error: string };
 
 export function sendPix(fromKey: string, toKey: string, amount: number, description = "PIX"): PixResult {
-  const from = findAccount(fromKey);
-  const to = findAccount(toKey);
+  const from = resolveAccount(fromKey);
+  const to = resolveAccount(toKey);
   if (!from) return { ok: false, error: `Não encontrei a conta de origem "${fromKey}".` };
   if (!to) return { ok: false, error: `Não encontrei ninguém com a chave "${toKey}".` };
   if (from.id === to.id) return { ok: false, error: "A conta de origem e a de destino são a mesma." };
@@ -362,7 +362,7 @@ export type InvestResult =
   | { ok: false; error: string };
 
 export function invest(accountKey: string, productId: string, amount: number): InvestResult {
-  const account = findAccount(accountKey);
+  const account = resolveAccount(accountKey);
   if (!account) return { ok: false, error: `Não encontrei a conta "${accountKey}".` };
 
   const product = findInvestmentProduct(productId);
@@ -418,7 +418,7 @@ export function requestLoan(
   amount: number,
   months: number
 ): LoanContract {
-  const account = findAccount(accountKey);
+  const account = resolveAccount(accountKey);
   if (!account) return { ok: false, error: `Não encontrei a conta "${accountKey}".` };
 
   const quote = simulateLoan(productId, amount, months);
@@ -590,7 +590,7 @@ export type CardResult =
   | { ok: false; error: string };
 
 export function issueCard(accountKey: string, kind: string): CardResult {
-  const account = findAccount(accountKey);
+  const account = resolveAccount(accountKey);
   if (!account) return { ok: false, error: `Não encontrei a conta "${accountKey}".` };
 
   const tipo = kind.trim().toLowerCase();
@@ -628,11 +628,20 @@ export function issueCard(accountKey: string, kind: string): CardResult {
 }
 
 export type BillResult =
-  | { ok: true; transactionId: string; accountId: string; payee: string; amount: number; balanceAfter: number; date: string }
+  | {
+      ok: true;
+      transactionId: string;
+      accountId: string;
+      payee: string;
+      payeeAccount: string | null;
+      amount: number;
+      balanceAfter: number;
+      date: string;
+    }
   | { ok: false; error: string };
 
 export function payBill(accountKey: string, payee: string, amount: number, description?: string): BillResult {
-  const account = findAccount(accountKey);
+  const account = resolveAccount(accountKey);
   if (!account) return { ok: false, error: `Não encontrei a conta "${accountKey}".` };
   if (!payee?.trim()) return { ok: false, error: "Preciso saber para quem é o pagamento." };
   if (!(amount > 0)) return { ok: false, error: "O valor precisa ser maior que zero." };
@@ -640,7 +649,10 @@ export function payBill(accountKey: string, payee: string, amount: number, descr
 
   const value = round(amount);
   const date = new Date().toISOString();
+  const nome = payee.trim();
   const id = `TRX-${String(db.transactions.length + 1).padStart(4, "0")}`;
+  const texto = description?.trim() || `Pagamento para ${nome}`;
+
   db.transactions.push({
     id,
     accountId: account.id,
@@ -649,15 +661,33 @@ export function payBill(accountKey: string, payee: string, amount: number, descr
     amount: value,
     type: "pagamento",
     channel: "app",
-    description: description?.trim() || `Pagamento para ${payee.trim()}`,
-    counterparty: payee.trim(),
+    description: texto,
+    counterparty: nome,
   });
+
+  // Se quem recebe tambem e da cidade, o dinheiro entra na conta dele de verdade;
+  // fornecedor de fora do banco fica so como saida.
+  const destino = resolveAccount(nome);
+  if (destino && destino.id !== account.id) {
+    db.transactions.push({
+      id: `TRX-${String(db.transactions.length + 1).padStart(4, "0")}`,
+      accountId: destino.id,
+      date,
+      direction: "credit",
+      amount: value,
+      type: "pagamento",
+      channel: "app",
+      description: texto,
+      counterparty: customerOf(account)?.name ?? account.id,
+    });
+  }
 
   return {
     ok: true,
     transactionId: id,
     accountId: account.id,
-    payee: payee.trim(),
+    payee: destino ? customerOf(destino)?.name ?? nome : nome,
+    payeeAccount: destino?.id ?? null,
     amount: value,
     balanceAfter: getBalance(account.id),
     date,
@@ -823,4 +853,114 @@ export function deleteService(key: string): CatalogResult<Record<string, unknown
   if (!item) return { ok: false, error: `Não encontrei o serviço "${key}".` };
   db.services.splice(db.services.findIndex((s) => s.id === item.id), 1);
   return { ok: true, item: item as Record<string, unknown> };
+}
+
+// --- Adquirencia: o comercio da cidade recebendo e pagando pelo banco ---
+
+export const merchantFees = db.merchantFees;
+
+// Aceita numero da conta, chave PIX, codigo do cliente ou nome dele.
+export function resolveAccount(key: string) {
+  const direta = findAccount(key);
+  if (direta) return direta;
+  const cliente = findCustomer(key);
+  return cliente ? db.accounts.find((a) => a.customerId === cliente.id) : undefined;
+}
+
+export type ChargeResult =
+  | {
+      ok: true;
+      transactionId: string;
+      business: string;
+      businessAccount: string;
+      customer: string;
+      customerAccount: string;
+      method: string;
+      gross: number;
+      fee: number;
+      feeRate: number;
+      net: number;
+      businessBalance: number;
+      customerBalance: number;
+    }
+  | { ok: false; error: string };
+
+export function chargeCustomer(
+  businessKey: string,
+  customerKey: string,
+  amount: number,
+  method: string,
+  description?: string
+): ChargeResult {
+  const business = resolveAccount(businessKey);
+  if (!business) return { ok: false, error: `Não encontrei a conta do negócio "${businessKey}".` };
+
+  const payer = resolveAccount(customerKey);
+  if (!payer) return { ok: false, error: `Não encontrei a conta de quem está pagando ("${customerKey}").` };
+  if (payer.id === business.id) return { ok: false, error: "O negócio não pode cobrar de si mesmo." };
+  if (!(amount > 0)) return { ok: false, error: "O valor da cobrança precisa ser maior que zero." };
+
+  const forma = method.trim().toLowerCase();
+  const taxas = merchantFees as Record<string, number>;
+  if (!(forma in taxas)) {
+    return { ok: false, error: `Aceitamos PIX, débito e crédito — não "${method}".` };
+  }
+  if (forma === "credito" && !db.cards.some((c) => c.accountId === payer.id && c.kind === "credito" && c.status === "ativo")) {
+    return { ok: false, error: "Quem está pagando não tem cartão de crédito ativo. Dá para pagar por PIX ou débito." };
+  }
+  if (getBalance(payer.id) < amount) {
+    return { ok: false, error: "O saldo de quem está pagando não cobre esse valor." };
+  }
+
+  const bruto = round(amount);
+  const taxa = round(bruto * taxas[forma]);
+  const liquido = round(bruto - taxa);
+  const date = new Date().toISOString();
+  const nomeNegocio = customerOf(business)?.name ?? business.id;
+  const nomePagador = customerOf(payer)?.name ?? payer.id;
+  const seq = db.transactions.length + 1;
+  const idSaida = `TRX-${String(seq).padStart(4, "0")}`;
+
+  db.transactions.push(
+    {
+      id: idSaida,
+      accountId: payer.id,
+      date,
+      direction: "debit",
+      amount: bruto,
+      type: forma === "pix" ? "pix_out" : "compra_cartao",
+      channel: forma === "pix" ? "pix" : `cartao_${forma}`,
+      description: description?.trim() || `Compra em ${nomeNegocio}`,
+      counterparty: nomeNegocio,
+    },
+    {
+      id: `TRX-${String(seq + 1).padStart(4, "0")}`,
+      accountId: business.id,
+      date,
+      direction: "credit",
+      amount: liquido,
+      type: forma === "pix" ? "pix_in" : "recebimento_maquininha",
+      channel: forma === "pix" ? "pix" : "maquininha",
+      description:
+        (description?.trim() || `Venda para ${nomePagador}`) +
+        (taxa > 0 ? ` (taxa de ${(taxas[forma] * 100).toFixed(1)}%)` : ""),
+      counterparty: nomePagador,
+    }
+  );
+
+  return {
+    ok: true,
+    transactionId: idSaida,
+    business: nomeNegocio,
+    businessAccount: business.id,
+    customer: nomePagador,
+    customerAccount: payer.id,
+    method: forma,
+    gross: bruto,
+    fee: taxa,
+    feeRate: taxas[forma],
+    net: liquido,
+    businessBalance: getBalance(business.id),
+    customerBalance: getBalance(payer.id),
+  };
 }

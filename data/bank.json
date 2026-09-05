@@ -658,6 +658,18 @@
       "category": "investimentos",
       "description": "Fundo que compra recebiveis de empresas da cidade e distribui o rendimento aos cotistas.",
       "tool": "invest"
+    },
+    {
+      "id": "SVC-23",
+      "name": "Maquininha Sajo Pay",
+      "category": "pagamentos",
+      "description": "O comercio da cidade recebe por PIX, debito ou credito e o dinheiro cai na conta na hora.",
+      "tool": "charge_customer"
     }
-  ]
+  ],
+  "merchantFees": {
+    "pix": 0,
+    "debito": 0.015,
+    "credito": 0.035
+  }
 }

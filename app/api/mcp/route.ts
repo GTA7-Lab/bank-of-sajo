@@ -2,6 +2,7 @@ import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 import {
   accountStatement,
+  chargeCustomer,
   checkMagicWord,
   createCustomer,
   createProduct,
@@ -444,6 +445,9 @@ const handler = createMcpHandler(
         if (!r.ok) return reply(`Não consegui pagar. ${r.error}`, { ok: false, error: r.error });
         return reply(
           `Pagamento feito! ${brl(r.amount)} para ${r.payee}.\n` +
+            (r.payeeAccount
+              ? `Como ${r.payee} também é da cidade, o valor já entrou na conta ${r.payeeAccount}.\n`
+              : "") +
             `O saldo da conta ${r.accountId} agora é ${brl(r.balanceAfter)}.`,
           { ...r }
         );
@@ -577,6 +581,33 @@ const handler = createMcpHandler(
         const r = deleteService(service);
         if (!r.ok) return reply(r.error, { ok: false, error: r.error });
         return reply(`${r.item.name} não faz mais parte dos serviços do banco.`, { ...r });
+      }
+    );
+
+    server.tool(
+      "charge_customer",
+      "Cobra um cliente em nome de um negocio da cidade: a maquininha do banco. Aceita PIX, debito e credito, desconta a taxa do lojista e credita o negocio na hora.",
+      {
+        business: z.string().describe("Negocio que recebe: conta, chave PIX ou nome"),
+        customer: z.string().describe("Quem esta pagando: conta, chave PIX ou nome"),
+        amount: z.number().positive().describe("Valor da venda em reais"),
+        method: z.enum(["pix", "debito", "credito"]).describe("Forma de pagamento"),
+        description: z.string().optional().describe("O que foi vendido"),
+      },
+      async ({ business, customer, amount, method, description }) => {
+        const r = chargeCustomer(business, customer, amount, method, description);
+        if (!r.ok) return reply(`Não consegui cobrar. ${r.error}`, { ok: false, error: r.error });
+        const taxa =
+          r.fee > 0
+            ? `• Taxa da maquininha (${pct(r.feeRate)}): ${brl(r.fee)}\n• Você recebeu: ${brl(r.net)}\n`
+            : `• Sem taxa no PIX — você recebeu os ${brl(r.net)} inteiros\n`;
+        return reply(
+          `Venda aprovada! ${r.customer} pagou ${brl(r.gross)} em ${r.method} para ${r.business}.\n\n` +
+            taxa +
+            `• Saldo do negócio agora: ${brl(r.businessBalance)}\n\n` +
+            `O dinheiro já está na conta ${r.businessAccount}.`,
+          { ...r }
+        );
       }
     );
   },

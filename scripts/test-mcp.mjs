@@ -43,3 +43,11 @@ await call("create_service", { magicWord: "abre-te-sajo", name: "Seguro residenc
 await call("update_service", { magicWord: "abre-te-sajo", service: "Seguro residencial", description: "Protege a casa contra incendio, roubo e danos eletricos." });
 await call("delete_service", { service: "Seguro residencial" });
 await call("delete_service", { magicWord: "abre-te-sajo", service: "Seguro residencial" });
+
+console.log("\n=== comercio recebendo e pagando ===");
+await call("charge_customer", { business: "Padaria Pao da Vila", customer: "Carla Menezes", amount: 84.5, method: "pix", description: "Paes e frios" });
+await call("charge_customer", { business: "Cinema Lumiere GTA7", customer: "ACC-1001", amount: 120, method: "credito", description: "4 ingressos" });
+await call("charge_customer", { business: "Padaria Pao da Vila", customer: "ACC-1003", amount: 999999, method: "debito" });
+await call("pay_bill", { account: "Cinema Lumiere GTA7", payee: "Padaria Pao da Vila", amount: 300, description: "Coffee break da estreia" });
+await call("pay_bill", { account: "ACC-1004", payee: "Moinho Sul", amount: 250, description: "Farinha" });
+await call("get_account_balance", { account: "12345678000190" });

@@ -19,9 +19,11 @@ que a consome pelo endpoint MCP publicado — nao pelo codigo.
 **Regra de saldo:** saldo = `openingBalance` + creditos − debitos das transacoes. O JSON nao guarda saldo; ele e sempre derivado (`getBalance`).
 
 ## MCP tools (`app/api/mcp/route.ts`, endpoint `/api/mcp`, transporte HTTP)
-22 tools. Clientes (CRUD): `create_customer`, `get_customer`, `list_customers`,
+23 tools. Clientes (CRUD): `create_customer`, `get_customer`, `list_customers`,
 `update_customer`, `delete_customer`. Contas e dinheiro: `open_account`,
-`get_account_balance`, `search_transactions`, `send_pix`, `pay_bill`, `issue_card`.
+`get_account_balance`, `search_transactions`, `send_pix`, `pay_bill`, `issue_card`,
+`charge_customer` (maquininha: cobra um cliente em nome de um negocio, com taxa por forma
+de pagamento em `merchantFees`).
 Produtos: `list_services`, `list_products`, `simulate_loan`, `request_loan`, `invest`.
 Catalogo (restrito): `create_product`, `update_product`, `delete_product`,
 `create_service`, `update_service`, `delete_service` — exigem o parametro `magicWord`,
@@ -50,6 +52,12 @@ Helper `reply(texto, dados)` no topo do route garante os dois lados.
   contas encerradas para nao deixar registro orfao.
 - `create_customer` cria so o cadastro; `open_account` cria cadastro + conta. Cliente sem
   conta e um estado valido.
+- `resolveAccount` aceita numero da conta, chave PIX, codigo do cliente ou nome — todas as
+  tools que pedem conta passam por ela, entao ninguem precisa decorar numero.
+- `pay_bill` credita o destinatario quando ele e cliente do banco; fornecedor de fora fica
+  so como saida. `charge_customer` gera as duas pernas e desconta a taxa do lojista.
+- Cartao de credito na v1 debita a conta na hora: nao ha fatura. A distincao entre debito e
+  credito e a taxa cobrada do lojista e a exigencia de cartao ativo.
 - Datas formatadas a partir do texto ISO, sem passar por `Date`, para o fuso do servidor
   nao empurrar um registro de hoje para ontem.
 - Sem auth, sem banco, sem Docker (limitacoes acordadas da v1).

@@ -50,7 +50,8 @@ As respostas são escritas para gente ler — conversa, sem jargão. Os dados v�
 | `get_account_balance` | saldo, titular e últimas movimentações |
 | `search_transactions` | busca por conta, tipo, valor, período ou descrição |
 | `send_pix` | PIX entre contas, conferindo o saldo |
-| `pay_bill` | paga contas e boletos |
+| `pay_bill` | paga contas e boletos — credita o destinatário se ele for da cidade |
+| `charge_customer` | maquininha: o negócio cobra um cliente por PIX, débito ou crédito |
 | `issue_card` | emite cartão de débito ou crédito |
 
 **Catálogo — restrito pela palavra mágica**
@@ -63,6 +64,19 @@ A palavra padrão é `abre-te-sajo`. Para trocar, defina a variável de ambiente
 `BANK_MAGIC_WORD` no projeto da Vercel. Vale dizer o que isso é e o que não é: uma trava
 contra alteração acidental do catálogo, não autenticação — o endpoint é público e a
 palavra viaja como parâmetro comum.
+
+**Comércio da cidade**
+
+`charge_customer` é a maquininha do banco: o restaurante, o cinema ou o supermercado
+cobram um morador e o dinheiro cai na conta na hora, já descontada a taxa do lojista —
+PIX sem taxa, débito 1,5%, crédito 3,5% (em `merchantFees`, no JSON).
+
+`pay_bill` fecha o outro lado: quando quem recebe também tem conta aqui, o valor entra
+de verdade na conta dele; fornecedor de fora do banco fica só como saída.
+
+Todas as tools que pedem uma conta aceitam número (`ACC-1004`), chave PIX ou o **nome**
+do cliente — então "cobre a Carla pela Padaria Pão da Vila" funciona sem ninguém decorar
+número de conta.
 
 **Produtos**
 
